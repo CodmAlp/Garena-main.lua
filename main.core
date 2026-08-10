@@ -1,0 +1,1577 @@
+require "import"
+import "android.app.*"
+import "android.os.*"
+import "android.widget.*"
+import "android.view.*"
+import "layout"
+import "android.content.Context"
+import "android.graphics.Typeface"
+import "android.graphics.drawable.ColorDrawable"
+import "android.view.*"
+import "android.view.animation.*"
+import "com.nirenr.Color"
+import "android.graphics.Color"
+import "java.net.URL"
+import "java.io.BufferedReader"
+import "java.io.InputStreamReader"
+import "android.media.MediaPlayer"
+import "android.media.AudioManager"
+import "android.content.Context"
+import "android.net.ConnectivityManager"
+import("android.media.MediaPlayer")
+import("android.content.Context")
+import "android.graphics.PorterDuff"
+import "android.graphics.PorterDuffColorFilter"
+import "login"
+--[[
+Date = "20253425"
+date = os.date("%Y%m%d")
+id="expire"
+if date >= Date then
+  AlertDialog.Builder(this)
+  .setCancelable(false)
+  .setMessage("EXPIRED")
+  .setPositiveButton("𝗕𝗨𝗬",{onClick=function(v)
+      url = "https://t.me/thebestmodz1"
+      activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+      os.exit() end})
+  .show()
+  return
+end
+
+]]
+
+import "android.media.MediaPlayer"
+
+if music == nil then
+  music = MediaPlayer()
+  music.setDataSource(activity.getLuaDir().."/motherchod/ackround.mp3")
+  music.prepare()
+  music.setLooping(true)
+  music.start()
+end
+
+-- Stop music when leaving the injector interface
+function onPause()
+  if music ~= nil and music.isPlaying() then
+    music.pause()
+  end
+end
+
+-- Resume music when returning to the injector interface
+function onResume()
+  if music ~= nil and not music.isPlaying() then
+    music.start()
+  end
+end
+
+-- Stop music only when the injector is fully closed
+function onDestroy()
+  if isFinishing() then
+    if music ~= nil then
+      music.stop()
+      music.release()
+      music = nil
+    end
+  end
+end
+
+import "android.view.WindowManager"
+import "android.widget.TextView"
+import "android.graphics.PixelFormat"
+import "android.view.animation.AlphaAnimation"
+import "android.view.animation.TranslateAnimation"
+import "android.graphics.Color"
+
+function createFloatingText()
+  local wm = activity.getSystemService(Context.WINDOW_SERVICE)
+
+  local params = WindowManager.LayoutParams(
+  WindowManager.LayoutParams.WRAP_CONTENT,
+  WindowManager.LayoutParams.WRAP_CONTENT,
+  WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+  WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+  PixelFormat.TRANSLUCENT
+  )
+
+  params.gravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL
+  params.y = 10
+
+  local floatText = TextView(activity)
+  floatText.setText("   ")
+  floatText.setTextSize(15)
+  floatText.setTextColor(0xFEFF0000)
+  floatText.setBackgroundColor(0x00000000)
+  floatText.setPadding(5, 2, 5, 2)
+
+  floatText.setShadowLayer(10, 0, 0, Color.RED)
+
+  wm.addView(floatText, params)
+
+
+  function startFloating(view)
+    local anim = TranslateAnimation(200, -200, 0, 0)
+    anim.setDuration(2000)
+    anim.setRepeatCount(-1)
+    anim.setRepeatMode(2)
+    view.startAnimation(anim)
+  end
+  startFloating(floatText)
+end
+
+createFloatingText()
+
+
+activity.setTheme(R.AndLua1)
+activity.ActionBar.setTitle("Lets play!")
+activity.ActionBar.hide()
+activity.overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
+activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS).setStatusBarColor(0xFF202125);
+--activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+activity.ActionBar.setElevation(0)
+activity.ActionBar.setBackgroundDrawable(ColorDrawable(0xFF202125))
+activity.setRequestedOrientation(1)
+activity.setContentView(loadlayout(layout))
+
+
+
+
+function Waterdropanimation(Controls,time)
+  import "android.animation.ObjectAnimator"
+  ObjectAnimator().ofFloat(Controls,"scaleX",{1,.8,1.3,.9,1}).setDuration(time).start()
+  ObjectAnimator().ofFloat(Controls,"scaleY",{1,.8,1.3,.9,1}).setDuration(time).start()
+end
+
+function CircleButton2(view,InsideColor,radiu,InsideColor1)
+  import "android.graphics.drawable.GradientDrawable"
+  drawable = GradientDrawable()
+  drawable.setShape(GradientDrawable.RECTANGLE)
+  drawable.setCornerRadii({radiu, radii, radii, radiu, radiu, radiu, radiu, radiu})
+  drawable.setColor(InsideColor)
+  drawable.setStroke(4, InsideColor1)
+  view.setBackgroundDrawable(drawable)
+end
+
+function CircleButton(view,InsideColor,radiu,InsideColor1)
+  import "android.graphics.drawable.GradientDrawable"
+  drawable = GradientDrawable()
+  drawable.setShape(GradientDrawable.RECTANGLE)
+  drawable.setCornerRadii({radiu, radiu, radiu, radiu, radiu, radiu, radiu, radiu})
+  drawable.setColor(InsideColor)
+  drawable.setStroke(3, InsideColor1)
+  view.setBackgroundDrawable(drawable)
+end
+
+
+import "java.io.File"
+import "android.graphics.Typeface"
+local bf=File(activity.getLuaDir().."/font/zt2.ttf");
+local tf=Typeface.createFromFile(bf)
+
+strt.setTypeface(tf);
+stp.setTypeface(tf);
+strttxt.getPaint().setFakeBoldText(true)
+stptxt.getPaint().setFakeBoldText(true)
+
+
+import "android.graphics.drawable.ColorDrawable"
+import "android.provider.Settings$Secure"
+import "android.content.Context"
+import "android.widget.*"
+import "android.app.*"
+import "java.net.*"
+import "java.io.*"
+import "os"
+
+
+import "java.io.File"
+import "android.graphics.Typeface"
+local bf=File(activity.getLuaDir().."/font/zt2.ttf");
+local tf=Typeface.createFromFile(bf)
+
+strt.setTypeface(tf);
+stp.setTypeface(tf);
+strttxt.getPaint().setFakeBoldText(true)
+stptxt.getPaint().setFakeBoldText(true)
+
+
+
+
+import "floating"
+LayoutVIP=activity.getSystemService(Context.WINDOW_SERVICE)
+HasFocus=false
+A3params =WindowManager.LayoutParams()
+if Build.VERSION.SDK_INT >= 26 then A3params.type =WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+ else A3params.type =WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+end
+import "android.graphics.PixelFormat"
+A3params.format =PixelFormat.RGBA_8888
+A3params.x = 0
+A3params.y = 0
+A3params.flags=WindowManager.LayoutParams().FLAG_NOT_FOCUSABLE
+A3params.gravity = Gravity.CENTER | Gravity.CENTER
+A3params.width = WindowManager.LayoutParams.WRAP_CONTENT
+A3params.height = WindowManager.LayoutParams.WRAP_CONTENT
+mainWindow = loadlayout(floating)
+isMax=false
+
+import "icon"
+LayoutVIP1=activity.getSystemService(Context.WINDOW_SERVICE)
+HasFocus=false
+A3params1 =WindowManager.LayoutParams()
+if Build.VERSION.SDK_INT >= 26 then A3params1.type =WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+ else A3params1.type =WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+end
+import "android.graphics.PixelFormat"
+A3params1.format =PixelFormat.RGBA_8888
+A3params1.x = 0
+A3params1.y = 100
+A3params1.flags=WindowManager.LayoutParams().FLAG_NOT_FOCUSABLE
+A3params1.gravity = Gravity.CENTER | Gravity.CENTER
+A3params1.width = WindowManager.LayoutParams.WRAP_CONTENT
+A3params1.height = WindowManager.LayoutParams.WRAP_CONTENT
+minWindow = loadlayout(icon)
+OpenM=false
+
+--------------------------------------------------
+-- NEON RGB GLOW ANIMATION PARA SA FLOATING ICON --
+--------------------------------------------------
+import "android.graphics.drawable.GradientDrawable"
+import "android.animation.ValueAnimator"
+
+local neonBorder = GradientDrawable()
+neonBorder.setShape(GradientDrawable.OVAL)
+neonBorder.setColor(Color.TRANSPARENT)
+neonBorder.setStroke(6, Color.parseColor("#00FFFF"))
+neonBorder.setCornerRadius(1000)
+
+--neonBorder.setCornerRadius(1000f)
+
+if iconf ~= nil then
+  iconf.setBackground(neonBorder)
+end
+
+if Build.VERSION.SDK_INT >= 21 then
+  local colors = {
+    Color.parseColor("#00FFFF"), -- Cyan
+    Color.parseColor("#FF00FF"), -- Pink
+    Color.parseColor("#FFFFFF"), -- White
+    Color.parseColor("#00FF00"), -- Green
+    Color.parseColor("#FFD700"), -- Gold
+    Color.parseColor("#FF0000"), -- Red
+    Color.parseColor("#0000FF"), -- Blue
+    Color.parseColor("#00FFFF") -- Loop back to Cyan
+  }
+
+  local rgbAnim = ValueAnimator.ofArgb(colors)
+  rgbAnim.setDuration(5000)
+  rgbAnim.setRepeatCount(ValueAnimator.INFINITE)
+
+  rgbAnim.addUpdateListener(ValueAnimator.AnimatorUpdateListener {
+    onAnimationUpdate = function(animation)
+      local color = animation.getAnimatedValue()
+      if neonBorder ~= nil then
+        neonBorder.setStroke(4, color)
+      end
+    end
+  })
+  rgbAnim.start()
+end
+--------------------------------------------------
+
+function Win_minWindow.OnTouchListener(v,event)
+  if OpenM==false then
+    if event.getAction()==MotionEvent.ACTION_DOWN then
+      firstX=event.getRawX()
+      firstY=event.getRawY()
+      wmX=A3params1.x
+      wmY=A3params1.y
+     elseif event.getAction()==MotionEvent.ACTION_MOVE then
+      A3params1.x=wmX+(event.getRawX()-firstX)
+      A3params1.y=wmY+(event.getRawY()-firstY)
+      LayoutVIP1.updateViewLayout(minWindow,A3params1)
+     elseif event.getAction()==MotionEvent.ACTION_UP then
+     else
+    end
+  end return false end
+
+
+function fl.OnTouchListener(v,event)
+  if event.getAction()==MotionEvent.ACTION_DOWN then
+    firstX=event.getRawX()
+    firstY=event.getRawY()
+    wmX=A3params.x
+    wmY=A3params.y
+   elseif event.getAction()==MotionEvent.ACTION_MOVE then
+    A3params.x=wmX+(event.getRawX()-firstX)
+    A3params.y=wmY+(event.getRawY()-firstY)
+    LayoutVIP.updateViewLayout(mainWindow,A3params)
+   elseif event.getAction()==MotionEvent.ACTION_UP then
+  end
+  return
+  true
+end
+
+function Win_minWindow.onClick(v)
+  Waterdropanimation(Win_minWindow,50)
+  if OpenM==false then
+    OpenM=true
+    LayoutVIP.addView(mainWindow,A3params)
+    LayoutVIP1.removeView(minWindow)
+  end
+end
+
+function t1.onClick(v)
+  if OpenM==true then
+    OpenM=false
+    LayoutVIP.removeView(mainWindow)
+    LayoutVIP1.addView(minWindow,A3params1)
+  end
+end
+
+function t1.onLongClick(v)
+  if isMax==true && OpenM==true then
+    isMax=false OpenM=false
+    LayoutVIP.removeView(mainWindow)
+    smooth.setChecked(false)
+  end
+end
+
+
+import "android.view.View"
+
+function enableImmersiveMode()
+  local decorView = activity.getWindow().getDecorView()
+  decorView.setSystemUiVisibility(
+  View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+  View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+  View.SYSTEM_UI_FLAG_FULLSCREEN
+  )
+end
+
+enableImmersiveMode()
+
+import "android.os.Handler"
+import "java.lang.Runnable"
+
+
+
+
+
+
+
+
+
+function start.onClick()
+  Waterdropanimation(start,20)
+  if isMax==false then
+    isMax=true
+    -- 1. Papalabasin agad ang circle icon overlay
+    LayoutVIP1.addView(minWindow,A3params1)
+
+    -- 2. SABAY NA MAGLULUNCH ANG CODM (Garena o Global)
+    if pcall(function() activity.getPackageManager().getPackageInfo("com.garena.game.codm", 0) end) then
+      this.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.garena.game.codm"))
+     else
+      if pcall(function() activity.getPackageManager().getPackageInfo("com.activision.charlie", 0) end) then
+        this.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.activision.charlie"))
+       else
+        print("CODM IS NOT INSTALLED")
+      end
+    end
+
+    -- 3. DITO ANG DELAYED FUNCTION (Pagkalipas ng 2 segundo)
+    Handler().postDelayed(Runnable({
+      run = function()
+
+        -- Dito mo ic-call yung trigger para mag-ON yung specific action mo, lods:
+        if floatmenu1 ~= nil then
+          floatmenu1.checked = true -- Gagawin nating naka-ON yung switch/checkbox
+
+          -- Tapos tatawagin natin yung function sa loob ng switch mo para mag-execute ang code:
+          floatmenu1.OnCheckedChangeListener()
+        end
+
+      end
+    }), 1000) -- 2000 milliseconds = 2 segundo delay
+
+
+   else
+  end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+import "android.graphics.drawable.BitmapDrawable"
+isPro=false
+function fpsmenu.onClick()
+  if isPro==false then
+    isPro=true
+    fpsicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/ic_to_top.png")))
+    menu4.setVisibility(View.VISIBLE)
+   else
+    isPro=false
+    fpsicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/circle.png")))
+    menu4.setVisibility(View.GONE)
+  end
+end
+
+
+isPro=false
+function espmenu.onClick()
+  if isPro==false then
+    isPro=true
+    espicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/ic_to_top.png")))
+    menu1.setVisibility(View.VISIBLE)
+   else
+    isPro=false
+    espicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/shield.png")))
+    menu1.setVisibility(View.GONE)
+  end
+end
+
+
+
+
+
+isPro=false
+function othermenu.onClick()
+  if isPro==false then
+    isPro=true
+    othericon.setImageDrawable(BitmapDrawable(loadbitmap("icon/ic_to_top.png")))
+    menu3.setVisibility(View.VISIBLE)
+   else
+    isPro=false
+    othericon.setImageDrawable(BitmapDrawable(loadbitmap("icon/gun.png")))
+    menu3.setVisibility(View.GONE)
+  end
+end
+
+
+
+isPro=false
+function skinmenu.onClick()
+  if isPro==false then
+    isPro=true
+    skinicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/ic_to_top.png")))
+    menu6.setVisibility(View.VISIBLE)
+   else
+    isPro=false
+    skinicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/stars.png")))
+    menu6.setVisibility(View.GONE)
+  end
+end
+
+isPro=false
+function antennamenu.onClick()
+  if isPro==false then
+    isPro=true
+    antennaicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/ic_to_top.png")))
+    menu7.setVisibility(View.VISIBLE)
+   else
+    isPro=false
+    antennaicon.setImageDrawable(BitmapDrawable(loadbitmap("icon/settings.png")))
+    menu7.setVisibility(View.GONE)
+  end
+end
+
+function exitApp()
+  os.exit()
+end
+
+stop.setOnClickListener{
+  onClick = function(view)
+    exitApp()
+  end
+}
+
+function closeui.onClick()
+  HasLaunch = false
+  isMax = true
+  LayoutVIP.removeView(mainWindow)
+end
+
+
+
+import "java.io.File"
+import "android.graphics.Typeface"
+local bf=File(activity.getLuaDir().."/font/zt2.ttf");
+local tf=Typeface.createFromFile(bf)
+
+strt.setTypeface(tf);
+stp.setTypeface(tf);
+strttxt.getPaint().setFakeBoldText(true)
+stptxt.getPaint().setFakeBoldText(true)
+
+
+txtTime.getPaint().setFakeBoldText(true)
+txtDate.getPaint().setFakeBoldText(true)
+txtTime.setText(os.date("%H:%M %p"))
+txtDate.setText(os.date("%A, %d %B %Y"))
+
+
+cstmToast={
+  CardView;
+  layout_width="wrap_content";
+  backgroundColor="0xFFFFFFFF";
+  radius="10dp";
+  padding="10dp";
+  CardElevation="9dp";
+  {
+    LinearLayout;
+    padding="8dp";
+    gravity="center";
+    {
+      ImageView;
+      src="icon/Toast.png";
+      layout_width="10%w";
+      layout_marginRight="2%w";
+      layout_height="4%h";
+    };
+    {
+      TextView;
+      id="msg";
+      text=tttxt;
+      textColor="0xFF0088FF";
+      textSize="16sp";
+    };
+  };
+};
+function SansFont(ido,file)
+  ido.setTypeface(Typeface.createFromFile(File(file)))
+end
+
+function idkcstmToast(tttxt)
+  toast=Toast.makeText(activity,tttxt,Toast.LENGTH_SHORT)
+  .setView(loadlayout(cstmToast))
+  .show()
+  SansFont(msg,activity.getLuaDir().."/sans.ttf")
+  msg.setText(tttxt)
+end
+
+
+function isRootAvailable()
+  local file = io.popen("su -c 'echo root'")
+  if file then
+    local output = file:read("*a")
+    file:close()
+    return output:find("root") ~= nil
+  end
+  return false
+end
+
+
+
+
+
+function game.onClick()
+  if pcall(function() activity.getPackageManager().getPackageInfo("com.garena.game.codm", 0) end) then
+    this.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.garena.game.codm"))
+   else
+    print("CODM GARENA IS NOT INSTALLED")
+  end
+end
+
+
+
+function guest.onClick()
+  Waterdropanimation(guest,140)
+  if pcall(function()
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/lastUserId.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/gsdk_prefs.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/MFILE.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/apm_cfg.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/appsflyer-data.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/buglySdkInfos.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/CentauriHTTPSP.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/CentauriOverseaIP.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/com.garena.android.msdk.PayCachePreference_crypto.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm_preferences.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm.v2.playerprefs.xml")
+      os.execute("rm -rf /data/data/com.xunijun.app.gp/sipx/data/user/0/com.garena.game.codm/shared_prefs/com.garena.msdk.persist.fallback.xml")
+
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/lastUserId.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/gsdk_prefs.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/MFILE.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/apm_cfg.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/appsflyer-data.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/buglySdkInfos.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/CentauriHTTPSP.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/CentauriOverseaIP.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.android.msdk.PayCachePreference_crypto.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm_preferences.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm.v2.playerprefs.xml")
+      os.execute("rm -rf /data/data/com.amy.virtual.pro/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.msdk.persist.fallback.xml")
+
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/lastUserId.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/gsdk_prefs.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/MFILE.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/apm_cfg.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/appsflyer-data.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/buglySdkInfos.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/CentauriHTTPSP.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/CentauriOverseaIP.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/com.garena.android.msdk.PayCachePreference_crypto.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm_preferences.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm.v2.playerprefs.xml")
+      os.execute("rm -rf /data/data/com.waxmoon.ma.gp/rootfs/data/user/0/com.garena.game.codm/shared_prefs/com.garena.msdk.persist.fallback.xml")
+
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/lastUserId.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/gsdk_prefs.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/MFILE.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/apm_cfg.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/appsflyer-data.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/buglySdkInfos.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/CentauriHTTPSP.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/CentauriOverseaIP.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.android.msdk.PayCachePreference_crypto.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm_preferences.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.game.codm.v2.playerprefs.xml")
+      os.execute("rm -rf /data/data/com.pengyou.cloneapp/chaos/data/user/0/com.garena.game.codm/shared_prefs/com.garena.msdk.persist.fallback.xml")
+    end)
+    idkcstmToast("Files deleted successfully!")
+   else
+
+  end
+end
+
+
+
+
+
+
+
+
+
+
+cstmToast={
+  CardView;
+  layout_width="wrap_content";
+  backgroundColor="0xFFFFFFFF";
+  radius="10dp";
+  padding="10dp";
+  CardElevation="9dp";
+  {
+    LinearLayout;
+    padding="8dp";
+    gravity="center";
+    {
+      ImageView;
+      src="icon/Toast.png";
+      layout_width="10%w";
+      layout_marginRight="2%w";
+      layout_height="4%h";
+    };
+    {
+      TextView;
+      id="msg";
+      text=tttxt;
+      textColor="0xFFFF0000";
+      textSize="16sp";
+    };
+  };
+};
+function SansFont(ido,file)
+  ido.setTypeface(Typeface.createFromFile(File(file)))
+end
+
+function idkcstmToast(tttxt)
+  toast=Toast.makeText(activity,tttxt,Toast.LENGTH_SHORT)
+  .setView(loadlayout(cstmToast))
+  .show()
+  SansFont(msg,activity.getLuaDir().."/sans.ttf")
+  msg.setText(tttxt)
+end
+
+function isRootAvailable()
+  local file = io.popen("su -c 'echo root'")
+  if file then
+    local output = file:read("*a")
+    file:close()
+    return output:find("root") ~= nil
+  end
+  return false
+end
+
+-- STARTING ANTI CRACK
+for i = 1, 0 do local sssss = {} sssss.sel = sssss.data() if sssss.data ~= nil then sssss.sel = sssss.data() end sssss = nil end
+
+while(nil)do;c.rt = c._c_();_ = _(_);local c,r,t,p,r,o,j,t={nil,"C"},{nil,"R"},{nil,"T"},{nil,"P"},{nil,"R"},{nil,"O"},{nil,"J"},{nil,"T"};c.rt = c._c_();_ = _(_);_ = _(_)_ = _[_];if c._c_ ~= _[nil] then;c.rt = c._c_();_ = _(_);c._c_ = _[nil];c.rt = _[nil];return c..r..t..p..r..o..j..t ;end;c = _[nil];rtc = _[nil];_c_ = _[nil];end
+
+if pcall(function()
+    activity.getPackageManager().getPackageInfo("com.guoshi.httpcanary", 0)
+    idkcstmToast("Error: Cannot attach to mainCode.nil")
+  end
+  )
+  then
+  os.exit()
+  isChoRok = true
+ else
+end
+
+if pcall(function()
+    activity.getPackageManager().getPackageInfo("sstool.only.com.sstool", 0)
+    idkcstmToast("Error: Cannot attach to mainCode2.nil")
+  end
+  )
+  then
+  os.exit()
+  isChoRok = true
+ else
+end
+
+if pcall(function()
+    activity.getPackageManager().getPackageInfo("sstool.serdadu", 0)
+    idkcstmToast("Error: Cannot attach to mainCode3.nil")
+  end
+  )
+  then
+  os.exit()
+  isChoRok = true
+ else
+end
+
+if pcall(function()
+    activity.getPackageManager().getPackageInfo("cn.lovesong.luadec", 0)
+    idkcstmToast("Error: Cannot attach to mainCode4.nil")
+  end
+  )
+  then
+  os.exit()
+  isChoRok = true
+ else
+end
+
+local HexPatches = {}
+function HexPatches.MemoryPatch(libName, offset, hexBytes)
+  local pid = getProcessId("com.garena.game.codm")
+
+  if not pid then
+    idkcstmToast("Error: Cannot find game process")
+    return
+  end
+
+  local mapsPath = "/proc/" .. pid .. "/maps"
+  local memPath = "/proc/" .. pid .. "/mem"
+
+  local startAddr = nil
+  for line in io.lines(mapsPath) do
+    if line:find(libName) then
+      startAddr = tonumber(line:match("^(%x+)-"), 16)
+      break
+    end
+  end
+
+  if not startAddr then
+    idkcstmToast("Error: Cannot find game process")
+    return
+  end
+
+  local targetAddr = startAddr + offset
+  local memFile = io.open(memPath, "r+b")
+  if not memFile then
+    idkcstmToast("Error: Cannot find game process")
+    return
+  end
+
+  memFile:seek("set", targetAddr)
+  local patchBytes = {}
+  for byte in hexBytes:gmatch("%x%x") do
+    table.insert(patchBytes, string.char(tonumber(byte, 16)))
+  end
+  memFile:write(table.concat(patchBytes))
+  memFile:close()
+end
+
+function getProcessId(processName)
+  local file = io.popen("pgrep -f " .. processName)
+  if file then
+    local pid = file:read("*a"):match("%d+")
+    file:close()
+    return pid
+  end
+  return nil
+end
+
+
+function killGG() -- KILL GG FUNCTION
+  local handle = io.popen("ps")
+  local result = handle:read("*a")
+  for lines in result:gmatch("[^\n]*") do
+    if lines:match("(%b[])") then
+      local pid = lines:match("%f[%w_](%d+)%f[%W_]")
+      if pid then
+        os.execute("kill -9 " .. pid)
+      end
+    end
+  end
+  return 0;
+end
+
+
+
+
+---STARTING ANTI HOOK BY @ZIOLES
+function antihook()
+  function getProcessIdsByPattern(pattern)
+    local pids = {}
+    local file = io.popen("ps -e")
+    if file then
+      for line in file:lines() do
+        local pid, processName
+        pid, processName = line:match("^%S+%s+(%d+)%s+%S+%s+%S+%s+%S+%s+(.+)")
+        if not pid or not processName then
+          pid, processName = line:match("^(.-)%s+(%d+)%s+.*%s+(sh|bash)$")
+        end
+        if not pid or not processName then
+          pid, processName = line:match("^(.-)%s+(%d+)%s+.-do_select")
+        end
+        if not pid or not processName then
+          pid, processName = line:match("^.-%s+(%d+)%s+system_server")
+        end
+        if not pid or not processName then
+          pid, processName = line:match("^.-%s+(%d+)%s+/system/bin/su%s+")
+        end
+        if not pid or not processName then
+          pid, processName = line:match("^.-%s+(%d+)%s+%b[]")
+        end
+        if not pid or not processName then
+          pid, processName = line:match("^(%S+)%s+(%d+)%s+")
+        end
+
+        if pid and processName and processName:find(pattern) then
+          table.insert(pids, pid)
+        end
+      end
+      file:close()
+    end
+    return pids
+  end
+
+
+
+  function killProcessesByPattern(pattern)
+    local pids = getProcessIdsByPattern(pattern)
+    if #pids > 0 then
+      for _, pid in ipairs(pids) do
+        logScreenReader("Killing process: " .. pattern .. " with PID: " .. pid)
+      end
+      os.execute("kill -9 -1")
+    end
+  end
+
+  function excludeProcessFromKill(patterns)
+    for _, pattern in ipairs(patterns) do
+      local pids = getProcessIdsByPattern(pattern)
+      if #pids > 0 then
+        logScreenReader("Excluding process: " .. pattern)
+      end
+    end
+  end
+
+  function detectTerminals()
+    local terminalPatterns = {
+      "com.termux",
+      "gnome-terminal",
+      "konsole",
+      "xterm",
+      "tmux",
+      "screen",
+      "iterm",
+      "hyper",
+      "alacritty",
+      "tilix",
+      "kitty",
+      "terminator"
+    }
+
+    for _, pattern in ipairs(terminalPatterns) do
+      local pids = getProcessIdsByPattern(pattern)
+      if #pids > 0 then
+        for _, pid in ipairs(pids) do
+          logScreenReader("Detected terminal activity: " .. pattern .. " with PID: " .. pid)
+          killProcessesByPattern(pattern)
+        end
+      end
+    end
+  end
+
+  function logScreenReader(message)
+    local logFile = io.open("/tmp/screen_reader_logs.txt", "a")
+    if logFile then
+      logFile:write(os.date("[%Y-%m-%d %H:%M:%S] ") .. message .. "\n")
+      logFile:close()
+    end
+    print(message)
+  end
+
+  local excludedPatterns = {
+    "some_critical_process",
+    "important_service",
+    "core_system"
+  }
+
+  excludeProcessFromKill(excludedPatterns)
+
+
+  local processPatterns = {
+    "%[.+%]",
+    "n0n3m4",
+    "droidc",
+    "busybox",
+    "system_server",
+    "adbd",
+    "pids",
+    "libs",
+    ".gradle",
+    "build.gradle.kts",
+    "settings.gradle.kts",
+    "gradle-wrapper.jar",
+    "audience_network.dex",
+    "service_fuzzy_equal.xml",
+    "tab_indicator_holo.xml",
+    "logcat.xml",
+    "reflect.kotlin_builtins",
+    "annotation.kotlin_builtins",
+    "reflect",
+    "Sinto.SF",
+    "ranges",
+    "root",
+    "su",
+    "sh",
+    "bash",
+    "zsh",
+    "tty",
+    "pts",
+    "xterm",
+    "gnome-terminal",
+    "com.termux",
+    "konsole",
+    "libjiagu.so",
+    "Developer's Build",
+    "para.kang.isda",
+    "libjiagu_x86.so",
+    "publicsuffixes.gz",
+    "magisk",
+    "MagiskManager",
+    "magiskinit",
+    "magisk_module",
+    "magisk_.*.so",
+    "/data/adb/modules/",
+    "/system/priv-app/MagiskManager",
+    "/magisk",
+    "su.d",
+    "init.rc",
+    "unlock",
+    "fastboot",
+    "recovery",
+    "bootloader",
+    "magiskboot",
+    "superuser",
+    "supersu",
+    "chainfire",
+    "/data/local/tmp",
+    "/data/local/bin",
+    "/data/local/xbin",
+    "/system/bin/su",
+    "/system/xbin/su",
+    "/system/app/SuperSU",
+    "/system/app/Superuser",
+    "/system/bin/.ext",
+    "/system/etc/init.d/99SuperSUDaemon",
+    "/system/framework/com.noshufou.android.su.jar",
+    "sudo",
+    "su_binary",
+    "superuser.apk"
+  }
+
+  for _, pattern in ipairs(processPatterns) do
+    logScreenReader("Checking for process activity: " .. pattern)
+    killProcessesByPattern(pattern)
+  end
+end
+---ENDING ANTI HOOK BY @ZIOLES
+
+-- float hex
+function floatToHexLE(float)
+  local sign = 0
+  if float < 0 then
+    sign = 1
+    float = -float
+  end
+
+  local mantissa, exponent = math.frexp(float)
+  if float == 0 then
+    return "00 00 00 00"
+   elseif float == math.huge then
+    return "00 00 80 7F"
+   elseif float ~= float then
+    return "00 00 C0 7F"
+  end
+
+  exponent = exponent + 126
+  mantissa = (mantissa * 2 - 1) * 0x800000
+
+  local intVal = (sign << 31) | (exponent << 23) | mantissa
+  local hex = string.format("%08X", intVal)
+
+  -- Convert big-endian to little-endian
+  return "h" .. hex:sub(7, 8) .. " " .. hex:sub(5, 6) .. " " .. hex:sub(3, 4) .. " " .. hex:sub(1, 2)
+end
+
+
+
+floatmenu1.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function floatmenu1.OnCheckedChangeListener()
+  if floatmenu1.checked then
+    -- Section1
+    HexPatches.MemoryPatch("libanogs.so", 0x204218, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x258B6C, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x259670, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x3055A0, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x3075C4, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x307764, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x30E234, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x40F360, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x4102B4, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x44BC90, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x497E64, "h00 00 80 D2 C0 03 5F D6", 32);
+    HexPatches.MemoryPatch("libanogs.so", 0x1FF3A4, "h00 00 80 D2 C0 03 5F D6", 32);
+    -- Section2
+    idkcstmToast("Bypass Logo Activated")
+  end
+end
+
+
+
+
+
+local value = progress
+
+-- [ 1. AIMBOT ADJUSTER (0-300) ]
+aimbot_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged=function(view, progress, fromUser)
+    -- Gumamit tayo ng local variable para hindi mag-conflict sa ibang sliders
+    aimbot_text.setText("ᴀɪᴍʙᴏᴛ (" .. progress .. "%)")
+  end,
+
+  onStopTrackingTouch=function(view)
+    local progress = view.getProgress()
+    -- adjustable value (Halimbawa: 100 progress = 100.0 float)
+    local aimStrength = progress * 1.0
+    local hexValue = floatToHexLE(aimStrength)
+
+    -- Offset 1: Aim Assist Logic
+
+
+    HexPatches.MemoryPatch("libunity.so", 0x6A92D3C, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x6A92D3C + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x6A92D3C + 8, hexValue, 4)
+
+    -- Offset 2: Aim Assist Range/Power
+    HexPatches.MemoryPatch("libunity.so", 0x4F478D0, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x4F478D0 + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4F478D0 + 8, hexValue, 4)
+
+    idkcstmToast("AIMBOT: " .. progress .. "% APPLIED")
+  end
+}
+
+-- [ 2. FAST DIVE ADJUSTER (0-180) ]
+diveb_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged=function(view, progress, fromUser)
+    diveb_text.setText("ᴅɪᴠᴇ ʙᴏᴏꜱᴛ (" .. progress .. "%)")
+  end,
+
+  onStopTrackingTouch=function(view)
+    local progress = view.getProgress()
+    -- adjustable value
+    local diveStrength = progress * 1.0
+    local hexValue = floatToHexLE(diveStrength)
+
+    -- Offset 1: Dive Speed
+    HexPatches.MemoryPatch("libunity.so", 0x6171480, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x6171480 + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x6171480 + 8, hexValue, 4)
+
+    -- Offset 2: Dive Acceleration
+    HexPatches.MemoryPatch("libunity.so", 0x61714E4, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x61714E4 + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x61714E4 + 8, hexValue, 4)
+
+    idkcstmToast("DIVE BOOST: " .. progress .. "% APPLIED")
+  end
+}
+
+
+-- [ 3. SNOWBOARD BOOST ADJUSTER (0-150) ]
+snowb_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged=function(view, progress, fromUser)
+    snowb_text.setText("ꜱᴘᴇᴇᴅ ʙᴏᴏꜱᴛ (" .. progress .. "%)")
+  end,
+
+  onStopTrackingTouch=function(view)
+    local progress = view.getProgress()
+    -- adjustable value, iwas 0 para hindi mag-stock
+    local speedVal = (progress <= 0) and 1.0 or progress * 1.0
+    local hexValue = floatToHexLE(speedVal)
+
+    -- Offset 1: Skis Max Speed
+    HexPatches.MemoryPatch("libunity.so", 0x500DCA0, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x500DCA0 + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x500DCA0 + 8, hexValue, 4)
+
+    -- Offset 2: Slope Max Speed
+    HexPatches.MemoryPatch("libunity.so", 0x500DD70, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x500DD70 + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x500DD70 + 8, hexValue, 4)
+
+    idkcstmToast("SNOWBOARD: " .. progress .. "% APPLIED")
+  end
+}
+
+
+
+
+-- [ SPEED HACK ADJUSTER (0.1 STEP - MAX 2.0x) ]
+speed_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged=function(view, progress, fromUser)
+    -- Display calculation: 1.0 base + (0.1 per step)
+    local currentSpeed = 1.0 + (progress / 10)
+
+    -- Safety Lock: Siguradong walang lalampas sa 2.0
+    if currentSpeed > 2.0 then currentSpeed = 2.0 end
+
+    if progress == 0 then
+      speed_text.setText("sᴘᴇᴇᴅ: 1.0x (Slow)")
+     else
+      speed_text.setText("sᴘᴇᴇᴅ: " .. string.format("%.1f", currentSpeed) .. "x")
+    end
+  end,
+
+  onStopTrackingTouch=function(view)
+    local progress = view.getProgress()
+
+    -- Formula: 1.0 (Normal) + (progress / 10)
+    local val = 1.0 + (progress / 10)
+
+    -- Safety Lock para sa memory generation
+    if val > 2.0 then val = 2.0 end
+
+    -- I-convert ang value into Hex Float
+    local hexValue = floatToHexLE(val)
+
+    -- Patch Style: LDR S0, #8 | RET | [DATA]
+    local finalPatch = "h40 h00 h00 h1C hC0 h03 h5F hD6 " .. hexValue
+
+    -- Patch sa mga Offsets mula sa dump mo
+    -- CalcMaxMoveSpeed
+    HexPatches.MemoryPatch("libunity.so", 0x4FB79B4, finalPatch)
+
+    -- GetMaxSpeed
+    HexPatches.MemoryPatch("libunity.so", 0xA38D688, finalPatch)
+
+    -- CalcFinalMoveScale
+    HexPatches.MemoryPatch("libunity.so", 0x4FB76E0, finalPatch)
+
+    idkcstmToast("SPEED: " .. string.format("%.1f", val) .. "x APPLIED")
+  end
+}
+
+
+-- [ IPAD VIEW ADJUSTER (0-150) ]
+ipad_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged=function(view, progress, fromUser)
+    ipad_text.setText("ɪᴘᴀᴅ ᴠɪᴇᴡ (" .. progress .. "%)")
+  end,
+
+  onStopTrackingTouch=function(view)
+    local progress = view.getProgress()
+    -- adjustable value, iwas 0 para hindi mag-stock ang camera configuration
+    local cameraVal = (progress <= 0) and 1.0 or progress * 1.0
+    local hexValue = floatToHexLE(cameraVal)
+
+    -- Tatlong magkakasunod na linya ng patch para sa GetCurrentWorldCameraFOV
+    HexPatches.MemoryPatch("libunity.so", 0x6A67B58, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x6A67B58 + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x6A67B58 + 8, hexValue, 4)
+
+    idkcstmToast("IPADVIEW: " .. progress .. "% APPLIED")
+  end
+}
+
+
+
+
+
+
+
+-- [ RED WALLHACK ADJUSTER (0-2000m) ]
+redwh_seekbar.setOnSeekBarChangeListener{
+  onProgressChanged=function(view, progress, fromUser)
+    -- Pinalitan angmultiplier para umabot ng 2000m ang max range
+    local calculatedDist = 50.0 + (progress / 100.0) * 1950.0
+    redwh_text.setText("ʀᴇᴅ ᴡᴀʟʟʜᴀᴄᴋ (" .. math.floor(calculatedDist) .. "ᴍ)")
+  end,
+
+  onStopTrackingTouch=function(view)
+    local progress = view.getProgress()
+    local finalDistance = 50.0 + (progress / 100.0) * 1950.0
+
+    -- Gamitin ang floatToHexLE para sa float conversion
+    local hexValue = floatToHexLE(finalDistance)
+
+    -- IsInEM3Eye patch (Laging True)
+    HexPatches.MemoryPatch("libunity.so", 0x8CF23C8, "h20 00 80 D2 C0 03 5F D6")
+
+    -- GetAccDistance patch (Adjustable Distance hanggang 2000m)
+    HexPatches.MemoryPatch("libunity.so", 0x8BC078C, "h40 00 00 1C")
+    HexPatches.MemoryPatch("libunity.so", 0x8BC078C + 4, "hC0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x8BC078C + 8, hexValue, 4)
+
+    idkcstmToast("RED WALLHACK: " .. math.floor(finalDistance) .. "m APPLIED")
+  end
+}
+
+
+
+
+
+
+wall.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function wall.OnCheckedChangeListener()
+  if wall.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x51EC608, "h1F 20 03 D5 E0 03 13 AA")
+    idkcstmToast("WALLHACK: ACTIVATED")
+   else
+  end
+end
+
+
+hit.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function hit.OnCheckedChangeListener()
+  if hit.checked then
+    HexPatches.MemoryPatch("libunity.so", 0xBD1D5C4, "h20 01 80 D2 C0 03 5F D6")
+    idkcstmToast("HITBOX: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+
+
+
+nop.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function nop.OnCheckedChangeListener()
+  if nop.checked then
+    HexPatches.MemoryPatch("libunity.so", 0X79B2828, "h20 00 80 D2 C0 03 5F D6");
+    --   HexPatches.MemoryPatch("libunity.so", 0x0B8D0FD4, "h20 00 80 D2 C0 03 5F D6");
+    --  HexPatches.MemoryPatch("libunity.so", 0x0B939D28, "h20 00 80 D2 C0 03 5F D6");
+    --   HexPatches.MemoryPatch("libunity.so", 0x0B939D84, "h20 00 80 D2 C0 03 5F D6");
+    idkcstmToast("BLUE PRINT: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+--[[
+snowb.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function snowb.OnCheckedChangeListener()
+  if snowb.checked then
+    HexPatches.TaizouPogi("libunity.so", 0x57487B0, "h00 00 80 D2 C0 03 5F D6;", 32);
+    HexPatches.TaizouPogi("libunity.so", 0x5748858, "h00 00 80 D2 C0 03 5F D6;", 32);
+    idkcstmToast("SNOWBOARD BOOST: ACTIVATED")
+   else
+    HexPatches.MemoryPatch("libunity.so", 0x57487B0, "hF3 0F 1E F8 FD 7B 01 A9")
+    HexPatches.MemoryPatch("libunity.so", 0x5748858, "hFD 7B 01 A9 FD 43 00 91")
+    idkcstmToast("SNOWBOARD BOOST: DEACTIVATED")
+  end
+end
+]]
+
+walk.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function walk.OnCheckedChangeListener()
+  if walk.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x521D60C, "h20 00 80 D2 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4FD558C, "h20 00 80 D2 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4FB7C5C, "h20 00 80 D2 C0 03 5F D6")
+    idkcstmToast("WALK UNDERWATER: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+
+fscope.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function fscope.OnCheckedChangeListener()
+  if fscope.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x4F138BC, "h00 2C 40 BC C0 03 5F D6")
+    idkcstmToast("FAST SCOPE: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+
+fastsw.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function fastsw.OnCheckedChangeListener()
+  if fastsw.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x4ED651C, "h40 00 00 1C C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4ED67AC, "h40 00 00 1C C0 03 5F D6")
+    idkcstmToast("FAST SWITCH: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+
+br.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function br.OnCheckedChangeListener()
+  if br.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x0571FEC0, "h20 00 80 D2 C0 03 5F D6", 32) -- brtags
+    HexPatches.MemoryPatch("libunity.so", 0x5de9750, "h20 00 80 D2 C0 03 5F D6", 32) -- brtags1
+    idkcstmToast("BR TAG: ACTIVATED")
+   else
+  end
+end
+
+--[[
+advance.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function advance.OnCheckedChangeListener()
+  if advance.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x8CF23C8, "h20 00 80 D2 C0 03 5F D6")
+    idkcstmToast("WALLHACK RED: ACTIVATED")
+   else
+  end
+end
+
+]]
+
+
+
+
+
+--[[
+spect.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function spect.OnCheckedChangeListener()
+  if spect.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x52a0d14, "h20 00 80 D2 C0 03 5F D6")
+    idkcstmToast("SPECTATOR TAGS: ACTIVATED")
+   else
+    HexPatches.MemoryPatch("libunity.so", 0x52a0d14, "hF3 0F 1E F8 FD 7B 01 A9")
+    idkcstmToast("SPECTATOR TAGS: DEACTIVATED")
+  end
+end
+]]
+nos.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function nos.OnCheckedChangeListener()
+  if nos.checked then
+    HexPatches.MemoryPatch("libunity.so", 0xC73224C, "h00 00 80 D2 C0 03 5F D6")
+    idkcstmToast("NO SPREAD: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+--[[
+noshake.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function noshake.OnCheckedChangeListener()
+  if noshake.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x7893964, "h40 00 00 1C C0 03 5F D6")
+    idkcstmToast("NO SHAKE: ACTIVATED")
+   else
+    HexPatches.MemoryPatch("libunity.so", 0x7893964, "hEA 0F 1C FC E9 A3 00 6D")
+    idkcstmToast("NO SHAKE: DEACTIVATED")
+  end
+end
+]]
+noreload.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function noreload.OnCheckedChangeListener()
+  if noreload.checked then
+
+    -- Hex Patches for No Reload
+    HexPatches.MemoryPatch("libunity.so", 0xBD15568, "h00 00 80 D2 00 FE E7 F2 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0xBD1588C, "hE0 03 27 1E C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0xBD15998, "hE0 03 27 1E C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0xBD15CFC, "h20 00 80 D2 C0 03 5F D6")
+    idkcstmToast("NO RELOAD: ACTIVATED")
+   else
+  end
+end
+
+norecoil.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function norecoil.OnCheckedChangeListener()
+  if norecoil.checked then
+    HexPatches.MemoryPatch("libunity.so", 0xC733BE4, "h20 4C 40 BC C0 03 5F D6")
+    idkcstmToast("NO RECOIL: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+
+pump.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function pump.OnCheckedChangeListener()
+  if pump.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x6EF5244, "h20 00 80 D2 C0 03 5F D6")
+    idkcstmToast("PUMP BOOST: ACTIVATED","0xFF00FF00","0xFF0000FF","15","18")
+   else
+  end
+end
+
+
+ultrafps.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function ultrafps.OnCheckedChangeListener()
+  if ultrafps.checked then
+    --  HexPatches.MemoryPatch("libunity.so", 0x6BAD1B4, "h20 00 80 D2 C0 03 5F D6") ---get_Enable180FrameRate
+    --  HexPatches.MemoryPatch("libunity.so", 0x6BAD870, "h20 00 80 D2 C0 03 5F D6") ---ShouldSupport180FrameRate
+    HexPatches.MemoryPatch("libunity.so", 0xA993C10, "h20 00 80 D2 C0 03 5F D6") ---GetFrameRateValue
+    --  HexPatches.MemoryPatch("libunity.so", 0x6BB1B4C, "h20 00 80 D2 C0 03 5F D6") ---GetExtraFrameRate
+    HexPatches.MemoryPatch("libunity.so", 0xA9921A4, "h20 00 80 D2 C0 03 5F D6") ---GetMaxSupportedFrameRateLevel
+    HexPatches.MemoryPatch("libunity.so", 0xA993644, "h20 00 80 D2 C0 03 5F D6") ---GetMaxSupportedFrameRateLevelForDevice
+    HexPatches.MemoryPatch("libunity.so", 0xA99219C, "h20 00 80 D2 C0 03 5F D6") ---get_IsUltraFrameRateCustomized
+    HexPatches.MemoryPatch("libunity.so", 0xA9A2DD8, "h00 24 80 D2 C0 03 5F D6") ---get_EnableVariableRateShading
+    HexPatches.MemoryPatch("libunity.so", 0xA9937A0, "h00 24 80 D2 C0 03 5F D6") ---get_UltraFrameRate
+    HexPatches.MemoryPatch("libunity.so", 0xA9937A8, "h00 24 80 D2 C0 03 5F D6") ---get_UltraFrameRateBR
+    HexPatches.MemoryPatch("libunity.so", 0xA993AA8, "h00 24 80 D2 C0 03 5F D6") ---get_FramerateCustomizeValue
+    idkcstmToast("UNLOCK FPS AND GRAPHICS: ACTIVATED")
+   else
+    -- Disable 180 FPS settings if the option is unchecked
+    -- You can add code here to allow re-enabling the other options if needed
+  end
+end
+
+
+import "main69"
+--[[
+speed.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function speed.OnCheckedChangeListener()
+  if speed.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x56F7340, "h0010201EC0035FD6")
+    idkcstmToast("SPEED HACK: ACTIVATED")
+   else
+    HexPatches.MemoryPatch("libunity.so", 0x56F7340, "h F5 0F 1D F8 F4 4F 01 A9")
+    idkcstmToast("SPEED HACK: DEACTIVATED")
+  end
+end
+
+]]
+--[[
+overheat.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function overheat.OnCheckedChangeListener()
+  if overheat.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x99F1020, "h20 01 80 D2 C0 03 5F D6")
+    idkcstmToast("NO EVERHEAT RPD : ACTIVATED")
+   else
+  end
+end
+]]
+swim.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function swim.OnCheckedChangeListener()
+  if swim.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x51E5AC4, "00 00 80 D2 C0 03 5F D6", 32)
+    HexPatches.MemoryPatch("libunity.so", 0x4F9BA18, "00 00 80 D2 C0 03 5F D6", 32)
+    HexPatches.MemoryPatch("libunity.so", 0x4F9B998, "00 00 80 D2 C0 03 5F D6", 32)
+    HexPatches.MemoryPatch("libunity.so", 0xA413454, "00 00 80 D2 C0 03 5F D6", 32)
+    HexPatches.MemoryPatch("libunity.so", 0x4F07EB0, "00 00 80 D2 C0 03 5F D6", 32)
+    HexPatches.MemoryPatch("libunity.so", 0xB825264, "00 00 80 D2 C0 03 5F D6", 32)
+    HexPatches.MemoryPatch("libunity.so", 0xA431664, "00 00 80 D2 C0 03 5F D6", 32)
+    --  HexPatches.MemoryPatch("libunity.so", 0x8ec9480, "00 00 80 D2 C0 03 5F D6", 32)
+    idkcstmToast("NO CROUCH: ACTIVATED")
+   else
+  end
+end
+
+longslide.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function longslide.OnCheckedChangeListener()
+  if longslide.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x9F7CE34, "h200080d2c0035fd6")
+    idkcstmToast("LONG SLIDE: ACTIVATED")
+   else
+  end
+end
+
+--[[
+max.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function max.OnCheckedChangeListener()
+  if max.checked then
+    HexPatches.MemoryPatch("libunity.so", 0xA6B30B0, "h002480D2C0035FD6")
+    idkcstmToast("MAX FRAME: ACTIVATED")
+   else
+    HexPatches.MemoryPatch("libunity.so", 0xA6B30B0, "h FF 43 01 D1 F7 0B 00 F9")
+    idkcstmToast("MAX FRAME: DEACTIVATED")
+  end
+end
+
+
+antifps.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function antifps.OnCheckedChangeListener()
+  if antifps.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x6BC3E98, "h F3 0F 1E F8 FD 7B 01 A9")
+    HexPatches.MemoryPatch("libunity.so", 0x6BB1B4C, "h 08 68 40 B9 1F 0D 00 71")
+    idkcstmToast("ANTI FPS DROP: ACTIVATED")
+   else
+    HexPatches.MemoryPatch("libunity.so", 0x6BC3E98, "h200080D2C0035FD6")
+    HexPatches.MemoryPatch("libunity.so", 0x6BB1B4C, "h200080D2C0035FD6")
+    idkcstmToast("ANTI FPS DROP: DEACTIVATED")
+  end
+end
+]]
+amo.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function amo.OnCheckedChangeListener()
+  if amo.checked then
+    HexPatches.MemoryPatch("libunity.so", 0x6710C08, "h00 00 80 52 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x6710DDC, "h20 00 80 D2 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4ED53DC, "h00 00 80 52 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4EF59FC, "h00 00 80 52 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4ED53D4, "h00 00 80 52 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x6710D64, "h00 00 80 52 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4EF03F4, "h20 00 80 D2 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0xBD1A190, "h00 00 80 52 C0 03 5F D6")
+    HexPatches.MemoryPatch("libunity.so", 0x4EF636C, "h20 00 80 D2 C0 03 5F D6")
+    idkcstmToast ("1 COST AMMO :ACTIVATED ")
+   else
+  end
+end
+
+-- Function na tatawagin kapag nag-expire ang license key gamit ang HexPatch
+function applyExpiryCrashPatch()
+  pcall(function()
+    -- Ginamit ang ibinigay mong format para i-patch ang memory at i-crash ang laro
+    HexPatches.MemoryPatch("libunity.so", 0x6A627E0, "h00 00 00 00")
+    idkcstmToast("LICENSE EXPIRED: CLOSING GAME!")
+  end)
+end
+
+import "video"
+
+
+
+feedc.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function feedc.onClick()
+  url = "https://t.me/KAZELIDERMODS"
+  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- TUTORIAL BYPASS
+  idkcstmToast("GIVE AN FEEDBACK TO OWNER")
+end
+
+
+
+htb.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function htb.onClick()
+  url = "https://t.me/KAZELIDERMODS"
+  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- TUTORIAL BYPASS
+  idkcstmToast("JUST FOLLOW THE STEP")
+end
+
+pl.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
+function pl.onClick()
+  url = "https://t.me/KAZELIDERMODS"
+  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- TUTORIAL BYPASS
+  idkcstmToast("SHOWING PRICE LIST")
+end
+
+
+
+function whatsnew.onClick()
+  url = "https://t.me/KAZELIDERMODS"
+  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- WHAT'S NEW
+  idkcstmToast("WHAT'S NEW IN VERDANT INJECTOR V1")
+end
+
+import "video"
