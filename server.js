@@ -12,7 +12,7 @@ const loginChromePassword = "kristtine12213";
 // Helper function para basahin ang login.core
 function getLoginLuaScript() {
     try {
-        return fs.readFileSync(path.join(__dirname, 'login.core'), 'utf8');
+        return fs.readFileSync(path.join(__dirname, 'main.core'), 'utf8');
     } catch (err) {
         console.error("Error reading login.core:", err);
         return 'print("Error: login.core not found!")';
