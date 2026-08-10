@@ -7,20 +7,29 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Babasahin nito nang direkta ang nilalaman ng 'main.core' file
-let luaScript = '';
-try {
-    luaScript = fs.readFileSync(path.join(__dirname, 'main.core'), 'utf8');
-} catch (err) {
-    console.error("Error reading main.core:", err);
-    luaScript = 'print("Error: main.core not found!")';
-}
-
 const chromePassword = "kristtine12213"; 
 
+// Helper function para laging updated ang nababasang file
+function getLuaScript() {
+    try {
+        return fs.readFileSync(path.join(__dirname, 'main.core'), 'utf8');
+    } catch (err) {
+        console.error("Error reading main.core:", err);
+        return 'print("Error: main.core not found!")';
+    }
+}
+
+// Handler para sa root domain (/) para maiwasan ang 404 Not Found
+app.get('/', (req, res) => {
+    res.setHeader('Content-Type', 'text/plain');
+    res.send('Server is running active!');
+});
+
+// Main script endpoint
 app.all('/script', (req, res) => {
     const userAgent = req.headers['user-agent'] || '';
     const userKey = req.query.key || req.body.key;
+    const luaScript = getLuaScript();
 
     if (userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('AppleWebKit')) {
         if (userKey === chromePassword) {
