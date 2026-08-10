@@ -7,34 +7,34 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const chromePassword = "kristtine12213"; 
+const loginChromePassword = "kristtine12213"; 
 
-// Helper function para laging updated ang nababasang file
-function getLuaScript() {
+// Helper function para basahin ang login.core
+function getLoginLuaScript() {
     try {
-        return fs.readFileSync(path.join(__dirname, 'main.core'), 'utf8');
+        return fs.readFileSync(path.join(__dirname, 'login.core'), 'utf8');
     } catch (err) {
-        console.error("Error reading main.core:", err);
-        return 'print("Error: main.core not found!")';
+        console.error("Error reading login.core:", err);
+        return 'print("Error: login.core not found!")';
     }
 }
 
-// Handler para sa root domain (/) para maiwasan ang 404 Not Found
+// Handler para sa root domain (/)
 app.get('/', (req, res) => {
     res.setHeader('Content-Type', 'text/plain');
-    res.send('Server is running active!');
+    res.send('Login Server is running active!');
 });
 
-// Main script endpoint
-app.all('/script', (req, res) => {
+// Endpoint para sa login script
+app.all('/login-script', (req, res) => {
     const userAgent = req.headers['user-agent'] || '';
     const userKey = req.query.key || req.body.key;
-    const luaScript = getLuaScript();
+    const loginLuaScript = getLoginLuaScript();
 
     if (userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('AppleWebKit')) {
-        if (userKey === chromePassword) {
+        if (userKey === loginChromePassword) {
             res.setHeader('Content-Type', 'text/plain');
-            return res.send(luaScript);
+            return res.send(loginLuaScript);
         }
 
         res.setHeader('Content-Type', 'text/html');
@@ -42,7 +42,7 @@ app.all('/script', (req, res) => {
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Protected Script</title>
+                <title>Protected Login Script</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <style>
                     body { background: #121212; color: #fff; font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
@@ -54,7 +54,7 @@ app.all('/script', (req, res) => {
             </head>
             <body>
                 <div class="card">
-                    <h2>Enter Password</h2>
+                    <h2>Login Script Password</h2>
                     ${userKey ? '<div class="error">Maling Password!</div>' : ''}
                     <form method="POST">
                         <input type="password" name="key" placeholder="Password" required autocomplete="off">
@@ -67,9 +67,9 @@ app.all('/script', (req, res) => {
     }
 
     res.setHeader('Content-Type', 'text/plain');
-    res.send(luaScript);
+    res.send(loginLuaScript);
 });
 
 app.listen(PORT, () => {
-    console.log('Server is running on port ' + PORT);
+    console.log('Login Server is running on port ' + PORT);
 });
