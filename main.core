@@ -30,7 +30,6 @@ import "android.os.*"
 import "android.content.pm.ActivityInfo"
 
 require "import"
-
 import "android.widget.*"
 import "android.view.*"
 import "android.graphics.*"
@@ -45,1666 +44,360 @@ import "android.content.pm.ActivityInfo"
 import "com.androlua.Ticker"
 import "com.androlua.Http"
 
-import "java.net.URL"
-import "java.io.BufferedReader"
-import "java.io.InputStreamReader"
-
--- ==========================================
--- FORCE LANDSCAPE
--- ==========================================
-
-activity.setRequestedOrientation(
-ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-)
-
--- ==========================================
--- CONFIG
--- ==========================================
-
-local currentVersion = "2.8.2"
-
--- GITHUB UPDATE JSON
-local versionURL =
-"https://christophersalem94-eng.github.io/alp-update/update.json"
-
--- DEFAULT UPDATE LINK
-local downloadURL =
-"https://t.me/SliderModMenuMlbb"
-
--- ==========================================
--- LOGIN CONFIG
--- ==========================================
-
+local currentVersion = "2.8.1"
 local primary = 0xFF303030
 local cardColor = 0xFF202020
 local buttonColor = 0xFF969696
 local connectingColor = 0xFF999999
-
 local targetGame = "CODM"
+local webPanelURL = "https://slidermodmenucodm-registerdeviceid-garena.onrender.com/verify"
 
-local webPanelURL =
-"https://slidermodmenucodm-registerdeviceid-garena.onrender.com/verify"
+local pref = activity.getSharedPreferences("login_pref", 0)
 
-local pref =
-activity.getSharedPreferences(
-"login_pref",
-0
-)
-
--- ==========================================
--- DRAWABLE
--- ==========================================
-
-local function bg(
-  color,
-  radius,
-  strokeWidth,
-  strokeColor
-  )
-
+local function bg(color, radius, strokeWidth, strokeColor)
   local d = GradientDrawable()
-
   d.setColor(color)
   d.setCornerRadius(radius)
-
-  if strokeWidth then
-
-    d.setStroke(
-    strokeWidth,
-    strokeColor
-    )
-
-  end
-
+  if strokeWidth then d.setStroke(strokeWidth, strokeColor) end
   return d
-
 end
-
--- ==========================================
--- UNDERLINE
--- ==========================================
 
 local function makeUnderline(color)
-
-  local line =
-  GradientDrawable()
-
-  line.setColor(
-  0x00000000
-  )
-
-  line.setStroke(
-  2,
-  color
-  )
-
-  local layers =
-  LayerDrawable({
-    line
-  })
-
-  layers.setLayerInset(
-  0,
-  -8,
-  -8,
-  -8,
-  2
-  )
-
+  local line = GradientDrawable()
+  line.setColor(0x00000000)
+  line.setStroke(2, color)
+  local layers = LayerDrawable({ line })
+  layers.setLayerInset(0, -8, -8, -8, 2)
   return layers
-
 end
 
 -- ==========================================
--- UPDATE CHECKER UI
--- ==========================================
-
-update_layout = {
-
-  LinearLayout,
-
-  layout_width = "fill",
-  layout_height = "fill",
-
-  gravity = "center",
-
-  {
-
-    FrameLayout,
-
-    layout_width = "90%w",
-    layout_height = "wrap_content",
-
-    {
-
-      LinearLayout,
-
-      id = "loading_panel",
-
-      orientation = "vertical",
-
-      layout_width = "match_parent",
-      layout_height = "wrap_content",
-
-      padding = "16dp",
-
-      background =
-      bg(
-      cardColor,
-      8,
-      2,
-      0xFF3A4B6E
-      ),
-
-      gravity = "center",
-
-      visibility = 0,
-
-      {
-
-        TextView,
-
-        text = "ŞŁƗĐĒŘ",
-
-        textSize = "28sp",
-
-        textColor = 0xFFFF0000,
-
-        gravity = "center",
-
-      },
-
-      {
-
-        TextView,
-
-        id = "err_status",
-
-        text = "Checking for updates...",
-
-        textSize = "14sp",
-
-        textColor = 0xFFFFFF00,
-
-        gravity = "center",
-
-        layout_marginTop = "10dp",
-
-        layout_marginBottom = "15dp",
-
-      },
-
-      {
-
-        ProgressBar,
-
-        id = "loading_check",
-
-        layout_gravity = "center",
-
-      },
-
-      {
-
-        Button,
-
-        id = "retryBtn",
-
-        text = "RETRY",
-
-        layout_width = "match_parent",
-
-        layout_height = "40dp",
-
-        layout_marginTop = "10dp",
-
-        textColor = 0xFF000000,
-
-        background =
-        bg(
-        0xFF00FF00,
-        4
-        ),
-
-        visibility = 8,
-
-      }
-
-    },
-
-    {
-
-      LinearLayout,
-
-      id = "update_panel",
-
-      orientation = "vertical",
-
-      layout_width = "match_parent",
-
-      layout_height = "wrap_content",
-
-      padding = "16dp",
-
-      background =
-      bg(
-      cardColor,
-      8,
-      2,
-      0xFFFF0000
-      ),
-
-      gravity = "center",
-
-      visibility = 8,
-
-      {
-
-        TextView,
-
-        text = "UPDATE REQUIRED",
-
-        textSize = "22sp",
-
-        textColor = 0xFFFF0000,
-
-        gravity = "center",
-
-      },
-
-      {
-
-        TextView,
-
-        id = "update_msg",
-
-        text = "New version detected!",
-
-        textColor = 0xFFFFFFFF,
-
-        gravity = "center",
-
-        layout_marginTop = "8dp",
-
-        layout_marginBottom = "14dp",
-
-      },
-
-      {
-
-        Button,
-
-        id = "updateBtn",
-
-        text = "UPDATE NOW",
-
-        layout_width = "match_parent",
-
-        layout_height = "40dp",
-
-        textColor = 0xFF000000,
-
-        background =
-        bg(
-        0xFF00FF00,
-        4
-        ),
-
-      },
-
-    }
-
-  }
-
-}
-
--- ==========================================
--- UPDATE DIALOG
--- ==========================================
-
-local updateDialog =
-Dialog(
-activity,
-android.R.style.Theme_Material_Dialog_NoActionBar
-)
-
-updateDialog.setContentView(
-loadlayout(update_layout)
-)
-
-updateDialog.setCancelable(false)
-
-local updateWindow =
-updateDialog.getWindow()
-
-if updateWindow then
-
-  updateWindow.setBackgroundDrawable(
-  ColorDrawable(
-  0x00000000
-  )
-  )
-
-  updateWindow.setDimAmount(
-  0.6
-  )
-
-end
-
-updateDialog.show()
-
--- ==========================================
--- UPDATE BUTTON
--- ==========================================
-
-updateBtn.onClick =
-function()
-
-  activity.startActivity(
-
-  Intent(
-  Intent.ACTION_VIEW,
-
-  Uri.parse(
-  downloadURL
-  )
-  )
-
-  )
-
-  os.exit()
-
-end
-
--- ==========================================
--- LOGIN UI FUNCTION
+-- SHOW LOGIN UI (ONLINE SCRIPT ENTRY POINT)
 -- ==========================================
 
 local function showLoginUI()
 
-  -- ========================================
-  -- RESET LOGIN BUTTON
-  -- ========================================
-
   local function resetLoginButton()
-
-    loginBtn.setText(
-    "LOGIN"
-    )
-
-    loginBtn.setEnabled(
-    true
-    )
-
-    loginBtn.setBackground(
-    bg(
-    0xFFFFE65A,
-    0
-    )
-    )
-
+    loginBtn.setText("LOGIN")
+    loginBtn.setEnabled(true)
+    loginBtn.setBackground(bg(0xFFFFE65A, 0))
   end
-
-  -- ========================================
-  -- HIDE STATUS
-  -- IMPORTANT:
-  -- PANEL RETURNS TO ORIGINAL HEIGHT
-  -- ========================================
 
   local function hideStatus()
-
-    status.setText(
-    ""
-    )
-
-    status.setVisibility(
-    8
-    )
-
+    status.setText("")
+    status.setVisibility(8)
   end
-
-  -- ========================================
-  -- SHOW ERROR
-  -- ========================================
 
   local function showError(message)
-
-    status.setText(
-    message
-    )
-
-    status.setTextColor(
-    0xFFFF0000
-    )
-
-    status.setVisibility(
-    0
-    )
-
+    status.setText(message)
+    status.setTextColor(0xFFFF0000)
+    status.setVisibility(0)
   end
-
-  -- ========================================
-  -- SHOW SUCCESS
-  -- ========================================
 
   local function showSuccess(message)
-
-    status.setText(
-    message
-    )
-
-    status.setTextColor(
-    0xFF00FF00
-    )
-
-    status.setVisibility(
-    0
-    )
-
+    status.setText(message)
+    status.setTextColor(0xFF00FF00)
+    status.setVisibility(0)
   end
-
-  -- ========================================
-  -- SHAKE
-  -- ========================================
 
   local function shakeAnimation(view)
-
-    local anim =
-    TranslateAnimation(
-    0,
-    12,
-    0,
-    0
-    )
-
-    anim.setDuration(
-    50
-    )
-
-    anim.setRepeatCount(
-    4
-    )
-
-    anim.setRepeatMode(
-    2
-    )
-
-    view.startAnimation(
-    anim
-    )
-
+    local anim = TranslateAnimation(0, 12, 0, 0)
+    anim.setDuration(50)
+    anim.setRepeatCount(4)
+    anim.setRepeatMode(2)
+    view.startAnimation(anim)
   end
 
-  -- ========================================
-  -- LOGIN PANEL
-  -- ========================================
-
   login_layout = {
-
     LinearLayout,
-
     layout_width = "fill",
     layout_height = "fill",
-
     gravity = "center",
-
     {
-
       FrameLayout,
-
       layout_width = "150%w",
       layout_height = "wrap_content",
-
       {
-
         LinearLayout,
-
         id = "login_panel",
-
         orientation = "vertical",
-
         layout_width = "match_parent",
         layout_height = "wrap_content",
-
         paddingLeft = "18dp",
         paddingRight = "18dp",
         paddingTop = "5dp",
         paddingBottom = "5dp",
-
-        background =
-        bg(
-        0xFF202020,
-        18
-        ),
-
+        background = bg(0xFF202020, 18),
         gravity = "center_horizontal",
-
-        -- ==================================
-        -- LOGO
-        -- ==================================
-
         {
-
           TextView,
-
           text = "ŞŁƗĐĒŘ",
-
           textSize = "32sp",
-
           textColor = 0xFFFF0000,
-
           layout_width = "match_parent",
           layout_height = "38dp",
-
           gravity = "center",
-
           layout_marginBottom = "0dp",
-
         },
-
-        -- ==================================
-        -- VERSION
-        -- ==================================
-
         {
-
           TextView,
-
-          text =
-          "Garena v1.6.56 || Injector v"
-          .. currentVersion,
-
+          text = "Garena v1.6.56 || Injector v" .. currentVersion,
           textSize = "12sp",
-
           textColor = 0xFF00E5FF,
-
           layout_width = "match_parent",
           layout_height = "24dp",
-
           gravity = "center",
-
           layout_marginBottom = "7dp",
-
         },
-
-        -- ==================================
-        -- KEY INPUT
-        -- ==================================
-
         {
-
           EditText,
-
           id = "userKey",
-
           hint = "Paste your key here...",
-
           layout_width = "match_parent",
           layout_height = "42dp",
-
           paddingLeft = "2dp",
           paddingRight = "2dp",
-
           textColor = 0xFFFFFFFF,
-
           hintTextColor = 0x88999999,
-
           textSize = "16sp",
-
           singleLine = true,
-
-          background =
-          makeUnderline(
-          0xFFE0E0E0
-          ),
-
-          -- NORMAL GAP BEFORE LOGIN
+          background = makeUnderline(0xFFE0E0E0),
           layout_marginBottom = "8dp",
-
         },
-
-        -- ==================================
-        -- STATUS / ERROR MESSAGE
-        --
-        -- HIDDEN = NO EXTRA SPACE
-        -- VISIBLE = PANEL EXPANDS
-        -- ==================================
-
         {
-
           TextView,
-
           id = "status",
-
           text = "",
-
           textSize = "12sp",
-
           textColor = 0xFFFF0000,
-
           layout_width = "match_parent",
-
           layout_height = "22dp",
-
           gravity = "left|center_vertical",
-
           paddingLeft = "2dp",
           paddingRight = "2dp",
-
-          -- PULLS IT CLOSE TO UNDERLINE
           layout_marginTop = "-6dp",
-
           layout_marginBottom = "4dp",
-
-          -- IMPORTANT
           visibility = 8,
-
         },
-
-        -- ==================================
-        -- LOGIN
-        -- ==================================
-
         {
-
           Button,
-
           id = "loginBtn",
-
           text = "LOGIN",
-
           layout_width = "match_parent",
           layout_height = "50dp",
-
           textColor = 0xFF111111,
-
           textSize = "16sp",
-
           allCaps = false,
-
-          background =
-          bg(
-          0xFFFFE65A,
-          0
-          ),
-
+          background = bg(0xFFFFE65A, 0),
           layout_marginBottom = "8dp",
-
         },
-
-        -- ==================================
-        -- BUY VIP + FREE KEY
-        -- ==================================
-
         {
-
           LinearLayout,
-
           orientation = "horizontal",
-
           layout_width = "match_parent",
           layout_height = "46dp",
-
           layout_marginBottom = "7dp",
-
           {
-
             Button,
-
             id = "buyVipBtn",
-
             text = "BUY VIP KEY",
-
             layout_width = "0dp",
             layout_weight = "1",
-
             layout_height = "match_parent",
-
             layout_marginRight = "4dp",
-
             textColor = 0xFF111111,
-
             textSize = "14sp",
-
             allCaps = false,
-
-            background =
-            bg(
-            buttonColor,
-            0
-            ),
-
+            background = bg(buttonColor, 0),
           },
-
           {
-
             Button,
-
             id = "buyBtn",
-
             text = "GET FREE KEY",
-
             layout_width = "0dp",
             layout_weight = "1",
-
             layout_height = "match_parent",
-
             layout_marginLeft = "4dp",
-
             textColor = 0xFF111111,
-
             textSize = "14sp",
-
             allCaps = false,
-
-            background =
-            bg(
-            buttonColor,
-            0
-            ),
-
+            background = bg(buttonColor, 0),
           },
-
         },
-
-        -- ==================================
-        -- TELEGRAM
-        -- ==================================
-
         {
-
           TextView,
-
           id = "teleLink",
-
           padding = "1dp",
-
-          text =
-          Html.fromHtml(
-
-          "<font color='#00FF00'>t.me/</font>"
-          ..
-          "<font color='#FFFF00'>SliderChannel</font>"
-
-          ),
-
+          text = Html.fromHtml("<font color='#00FF00'>t.me/</font><font color='#FFFF00'>SliderChannel</font>"),
           textSize = "15sp",
-
           layout_width = "match_parent",
           layout_height = "22dp",
-
           gravity = "center",
-
         },
-
       }
-
     }
-
   }
 
-  -- ========================================
-  -- LOGIN DIALOG
-  -- ========================================
-
-  local loginDialog =
-  Dialog(
-  activity,
-  android.R.style.Theme_Material_Dialog_NoActionBar
-  )
-
-  loginDialog.setContentView(
-  loadlayout(login_layout)
-  )
-
+  local loginDialog = Dialog(activity, android.R.style.Theme_Material_Dialog_NoActionBar)
+  loginDialog.setContentView(loadlayout(login_layout))
   loginDialog.setCancelable(false)
 
-  local window =
-  loginDialog.getWindow()
-
+  local window = loginDialog.getWindow()
   if window then
+    window.setBackgroundDrawable(ColorDrawable(0x00000000))
+    window.setDimAmount(0.65)
+    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-    window.setBackgroundDrawable(
-    ColorDrawable(
-    0x00000000
-    )
-    )
-
-    window.setDimAmount(
-    0.65
-    )
-
-    window.setSoftInputMode(
-    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-    )
-
-    local lp =
-    window.getAttributes()
-
-    lp.width =
-    WindowManager.LayoutParams.MATCH_PARENT
-
-    lp.height =
-    WindowManager.LayoutParams.MATCH_PARENT
-
-    lp.gravity =
-    Gravity.CENTER
-
-    window.setAttributes(
-    lp
-    )
-
+    local lp = window.getAttributes()
+    lp.width = WindowManager.LayoutParams.MATCH_PARENT
+    lp.height = WindowManager.LayoutParams.MATCH_PARENT
+    lp.gravity = Gravity.CENTER
+    window.setAttributes(lp)
   end
 
   loginDialog.show()
 
-  -- ========================================
-  -- SAVED KEY
-  -- ========================================
-
-  local savedKey =
-  pref.getString(
-  "saved_key",
-  ""
-  )
-
+  local savedKey = pref.getString("saved_key", "")
   if savedKey ~= "" then
-
-    userKey.setText(
-    savedKey
-    )
-
+    userKey.setText(savedKey)
   end
 
-  -- ========================================
-  -- LOADING TIMER
-  -- ========================================
+  local loadingTimer = nil
 
-  local loadingTimer =
-  nil
-
-  -- ========================================
-  -- BACK = EXIT
-  -- ========================================
-
-  loginDialog.setOnKeyListener(
-
-  function(
-    dialog,
-    keyCode,
-    event
-    )
-
-    if keyCode ==
-      KeyEvent.KEYCODE_BACK
-      and event.getAction() ==
-      KeyEvent.ACTION_UP then
-
+  loginDialog.setOnKeyListener(function(dialog, keyCode, event)
+    if keyCode == KeyEvent.KEYCODE_BACK and event.getAction() == KeyEvent.ACTION_UP then
       if loadingTimer then
-
-        pcall(
-        function()
-
-          loadingTimer.stop()
-
-        end
-        )
-
-        loadingTimer =
-        nil
-
+        pcall(function() loadingTimer.stop() end)
+        loadingTimer = nil
       end
-
-      pcall(
-      function()
-
-        loginDialog.dismiss()
-
-      end
-      )
-
+      pcall(function() loginDialog.dismiss() end)
       activity.finish()
-
       return true
-
     end
-
     return false
-
-  end
-
-  )
-
-  -- ========================================
-  -- LOADING
-  -- ========================================
+  end)
 
   local function startLoadingEffect()
-
     if loadingTimer then
-
-      pcall(
-      function()
-
-        loadingTimer.stop()
-
-      end
-      )
-
-      loadingTimer =
-      nil
-
+      pcall(function() loadingTimer.stop() end)
+      loadingTimer = nil
     end
 
-    local dots =
-    {
-      "",
-      ".",
-      "..",
-      "..."
-    }
+    local dots = { "", ".", "..", "..." }
+    local count = 0
 
-    local count =
-    0
-
-    loginBtn.setBackground(
-    bg(
-    connectingColor,
-    0
-    )
-    )
-
-    loadingTimer =
-    Ticker()
-
-    loadingTimer.Period =
-    100
-
-    loadingTimer.onTick =
-    function()
-
-      loginBtn.setText(
-
-      "CONNECTING"
-      ..
-      dots[
-      (count % 4) + 1
-      ]
-
-      )
-
-      count =
-      count + 1
-
+    loginBtn.setBackground(bg(connectingColor, 0))
+    loadingTimer = Ticker()
+    loadingTimer.Period = 100
+    loadingTimer.onTick = function()
+      loginBtn.setText("CONNECTING" .. dots[(count % 4) + 1])
+      count = count + 1
     end
-
     loadingTimer.start()
-
   end
 
-  -- ========================================
-  -- LOGIN
-  -- ========================================
-
-  loginBtn.onClick =
-  function()
-
-    -- ======================================
-    -- GET INPUT
-    -- ======================================
-
-    local inputKey =
-    userKey.Text:gsub(
-    "%s+",
-    ""
-    )
-
-    -- ======================================
-    -- EMPTY KEY
-    -- ======================================
+  loginBtn.onClick = function()
+    local inputKey = userKey.Text:gsub("%s+", "")
 
     if inputKey == "" then
-
       resetLoginButton()
-
-      showError(
-      "Enter key"
-      )
-
-      shakeAnimation(
-      userKey
-      )
-
+      showError("Enter key")
+      shakeAnimation(userKey)
       return
-
     end
 
-    -- ======================================
-    -- IMPORTANT:
-    -- REMOVE OLD ERROR IMMEDIATELY
-    -- PANEL SHRINKS BACK
-    -- ======================================
-
     hideStatus()
-
-    loginBtn.setEnabled(
-    false
-    )
-
+    loginBtn.setEnabled(false)
     startLoadingEffect()
 
-    -- ======================================
-    -- DEVICE ID
-    -- ======================================
-
-    local deviceId =
-    Secure.getString(
-    activity.getContentResolver(),
-    Secure.ANDROID_ID
-    )
-
-    -- ======================================
-    -- POST DATA
-    -- ======================================
-
-    local postData =
-    {
+    local deviceId = Secure.getString(activity.getContentResolver(), Secure.ANDROID_ID)
+    local postData = {
       key = inputKey,
       device_id = deviceId,
       game = targetGame
     }
 
-    -- ======================================
-    -- SERVER REQUEST
-    -- ======================================
-
-    Http.post(
-
-    webPanelURL,
-
-    postData,
-
-    "utf-8",
-
-    nil,
-
-    function(
-      code,
-      body
-      )
-
-      -- ==================================
-      -- STOP LOADING
-      -- ==================================
-
+    Http.post(webPanelURL, postData, "utf-8", nil, function(code, body)
       if loadingTimer then
-
-        pcall(
-        function()
-
-          loadingTimer.stop()
-
-        end
-        )
-
-        loadingTimer =
-        nil
-
+        pcall(function() loadingTimer.stop() end)
+        loadingTimer = nil
       end
 
-      -- ==================================
-      -- SERVER RESPONSE
-      -- ==================================
+      if code == 200 and body then
+        local statusVal = tonumber(body:match('"status"%s*:%s*(%d+)'))
+        local expiryVal = tonumber(body:match('"expiry"%s*:%s*(%d+)'))
 
-      if code == 200
-        and body then
+        if statusVal == 0 and expiryVal then
+          loginBtn.setText("SUCCESS!")
+          loginBtn.setEnabled(true)
+          loginBtn.setBackground(bg(0xFFD4E056, 0))
 
-        local statusVal =
-        tonumber(
-        body:match(
-        '"status"%s*:%s*(%d+)'
-        )
-        )
+          local diff = expiryVal - os.time()
+          local dy = math.floor(diff / 86400)
+          local hr = math.floor((diff % 86400) / 3600)
+          local mn = math.floor((diff % 3600) / 60)
 
-        local expiryVal =
-        tonumber(
-        body:match(
-        '"expiry"%s*:%s*(%d+)'
-        )
-        )
+          showSuccess("Login Success | Valid: " .. dy .. "d " .. hr .. "h " .. mn .. "m")
 
-        -- =================================
-        -- SUCCESS
-        -- =================================
+          pref.edit().putString("saved_key", inputKey).apply()
 
-        if statusVal == 0
-          and expiryVal then
-
-          loginBtn.setText(
-          "SUCCESS!"
-          )
-
-          loginBtn.setEnabled(
-          true
-          )
-
-          loginBtn.setBackground(
-          bg(
-          0xFFD4E056,
-          0
-          )
-          )
-
-          local diff =
-          expiryVal - os.time()
-
-          local dy =
-          math.floor(
-          diff / 86400
-          )
-
-          local hr =
-          math.floor(
-          (diff % 86400)
-          / 3600
-          )
-
-          local mn =
-          math.floor(
-          (diff % 3600)
-          / 60
-          )
-
-          showSuccess(
-
-          "Login Success | Valid: "
-          ..
-          dy .. "d "
-          ..
-          hr .. "h "
-          ..
-          mn .. "m"
-
-          )
-
-          -- =================================
-          -- SAVE KEY
-          -- =================================
-
-          pref.edit()
-          .putString(
-          "saved_key",
-          inputKey
-          )
-          .apply()
-
-          -- =================================
-          -- CLOSE AFTER SUCCESS
-          -- =================================
-
-          task(
-          2000,
-          function()
-
+          task(1500, function()
             if loginDialog then
-
               loginDialog.dismiss()
-
             end
+            
+            -- PAG SUCCESSFUL ANG LOGIN, IPAPALABAS ANG CHEAT MENU/FLOAT
+            if loadMainApp then
+              loadMainApp()
+            end
+          end)
 
-          end
-          )
-
-          -- =================================
-          -- INVALID
-          -- STATUS 1 / 4
-          -- =================================
-
-         elseif statusVal == 1
-          or statusVal == 4 then
-
+        elseif statusVal == 1 or statusVal == 4 then
           resetLoginButton()
-
-          showError(
-          "Key Not Found ! Invalid"
-          )
-
-          shakeAnimation(
-          userKey
-          )
-
-          -- =================================
-          -- OTHER DEVICE
-          -- STATUS 2
-          -- =================================
-
-         elseif statusVal == 2 then
-
+          showError("Key Not Found ! Invalid")
+          shakeAnimation(userKey)
+        elseif statusVal == 2 then
           resetLoginButton()
-
-          showError(
-          "Key Already Used On Another Device"
-          )
-
-          shakeAnimation(
-          userKey
-          )
-
-          -- =================================
-          -- EXPIRED
-          -- STATUS 3
-          -- =================================
-
-         elseif statusVal == 3 then
-
+          showError("Key Already Used On Another Device")
+          shakeAnimation(userKey)
+        elseif statusVal == 3 then
           resetLoginButton()
-
-          showError(
-          "Key Expired"
-          )
-
-          shakeAnimation(
-          userKey
-          )
-
-          -- =================================
-          -- BLOCKED
-          -- STATUS 5
-          -- =================================
-
-         elseif statusVal == 5 then
-
+          showError("Key Expired")
+          shakeAnimation(userKey)
+        elseif statusVal == 5 then
           resetLoginButton()
-
-          showError(
-          "Device Blocked"
-          )
-
-          shakeAnimation(
-          userKey
-          )
-
-          -- =================================
-          -- UNKNOWN STATUS
-          -- =================================
-
-         else
-
+          showError("Device Blocked")
+          shakeAnimation(userKey)
+        else
           resetLoginButton()
-
-          showError(
-          "Key Not Found ! Invalid"
-          )
-
-          shakeAnimation(
-          userKey
-          )
-
+          showError("Key Not Found ! Invalid")
+          shakeAnimation(userKey)
         end
-
-        -- ==================================
-        -- SERVER OFFLINE / CONNECTION ERROR
-        -- ==================================
-
-       else
-
+      else
         resetLoginButton()
-
-        showError(
-        "Connection Error ! Server Offline"
-        )
-
-        shakeAnimation(
-        userKey
-        )
-
+        showError("Connection Error ! Server Offline")
+        shakeAnimation(userKey)
       end
-
-    end
-
-    )
-
+    end)
   end
 
-  -- ========================================
-  -- BUY VIP
-  -- ========================================
-
-  buyVipBtn.onClick =
-  function()
-
-    activity.startActivity(
-
-    Intent(
-    Intent.ACTION_VIEW,
-
-    Uri.parse(
-    "https://t.me/phia_maganda"
-    )
-    )
-
-    )
-
+  buyVipBtn.onClick = function()
+    activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/phia_maganda")))
   end
 
-  -- ========================================
-  -- FREE KEY
-  -- ========================================
-
-  buyBtn.onClick =
-  function()
-
-    activity.startActivity(
-
-    Intent(
-    Intent.ACTION_VIEW,
-
-    Uri.parse(
-    "https://slidermodmenucodm-registerdeviceid-garena.onrender.com/free"
-    )
-    )
-
-    )
-
+  buyBtn.onClick = function()
+    activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://slidermodmenucodm-registerdeviceid-garena.onrender.com/free")))
   end
 
-  -- ========================================
-  -- TELEGRAM
-  -- ========================================
-
-  teleLink.onClick =
-  function()
-
-    activity.startActivity(
-
-    Intent(
-    Intent.ACTION_VIEW,
-
-    Uri.parse(
-    "https://t.me/SliderModMenuCodm"
-    )
-    )
-
-    )
-
+  teleLink.onClick = function()
+    activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/SliderModMenuCodm")))
   end
 
 end
 
--- ==========================================
--- STRICT UPDATE CHECKER
--- ==========================================
+-- PATAKBUHIN ANG LOGIN UI AGAD
+showLoginUI()
 
-function checkUpdateStrict()
-
-  err_status.setText(
-  "Checking for updates..."
-  )
-
-  loading_check.setVisibility(
-  0
-  )
-
-  retryBtn.setVisibility(
-  8
-  )
-
-  loading_panel.setVisibility(
-  0
-  )
-
-  update_panel.setVisibility(
-  8
-  )
-
-  task(
-  100,
-  function()
-
-    local success, err =
-    pcall(
-
-    function()
-
-      local url =
-      URL(
-      versionURL
-      )
-
-      local connection =
-      url.openConnection()
-
-      connection.setConnectTimeout(
-      8000
-      )
-
-      connection.setReadTimeout(
-      8000
-      )
-
-      connection.setRequestMethod(
-      "GET"
-      )
-
-      connection.setRequestProperty(
-      "User-Agent",
-      "Mozilla/5.0"
-      )
-
-      if connection.getResponseCode()
-        == 200 then
-
-        local stream =
-        connection.getInputStream()
-
-        local reader =
-        BufferedReader(
-        InputStreamReader(
-        stream
-        )
-        )
-
-        local lines =
-        {}
-
-        while true do
-
-          local line =
-          reader.readLine()
-
-          if line == nil then
-
-            break
-
-          end
-
-          table.insert(
-          lines,
-          line
-          )
-
-        end
-
-        reader.close()
-
-        local rawText =
-        table.concat(
-        lines,
-        "\n"
-        )
-
-        -- =================================
-        -- PARSE UPDATE.JSON
-        -- =================================
-
-        local latestStr =
-        rawText:match(
-        '"latest_version"%s*:%s*"([^"]+)"'
-        )
-
-        local requiredStr =
-        rawText:match(
-        '"update_required"%s*:%s*(true)'
-        )
-
-        local messageStr =
-        rawText:match(
-        '"message"%s*:%s*"([^"]*)"'
-        )
-
-        local urlStr =
-        rawText:match(
-        '"download_url"%s*:%s*"([^"]+)"'
-        )
-
-        -- =================================
-        -- DOWNLOAD URL
-        -- =================================
-
-        if urlStr then
-
-          downloadURL =
-          urlStr
-
-        end
-
-        -- =================================
-        -- NEW VERSION
-        -- =================================
-
-        if latestStr
-          and latestStr ~= currentVersion then
-
-          loading_panel.setVisibility(
-          8
-          )
-
-          update_panel.setVisibility(
-          0
-          )
-
-          update_msg.setText(
-
-          "com.garena.game.codm\n\n"
-          ..
-          "Your Version: "
-          ..
-          currentVersion
-          ..
-          "\nRequired Version: "
-          ..
-          latestStr
-          ..
-          "\n\n"
-          ..
-          (
-          messageStr
-          or
-          "Please update to continue."
-          )
-
-          )
-
-          -- =================================
-          -- FORCE UPDATE
-          -- =================================
-
-         elseif requiredStr == "true" then
-
-          loading_panel.setVisibility(
-          8
-          )
-
-          update_panel.setVisibility(
-          0
-          )
-
-          update_msg.setText(
-
-          "com.garena.game.codm\n\n"
-          ..
-          "Your Version: "
-          ..
-          currentVersion
-          ..
-          "\n\n"
-          ..
-          (
-          messageStr
-          or
-          "Update required."
-          )
-
-          )
-
-          -- =================================
-          -- NO UPDATE
-          -- =================================
-
-         else
-
-          updateDialog.dismiss()
-
-          showLoginUI()
-
-        end
-
-       else
-
-        loading_check.setVisibility(
-        8
-        )
-
-        err_status.setText(
-        "Cannot check updates! Tap Retry."
-        )
-
-        retryBtn.setVisibility(
-        0
-        )
-
-      end
-
-    end
-
-    )
-
-    -- =====================================
-    -- UPDATE CHECK ERROR
-    -- =====================================
-
-    if not success then
-
-      loading_check.setVisibility(
-      8
-      )
-
-      err_status.setText(
-      "Connection Error! Tap Retry."
-      )
-
-      retryBtn.setVisibility(
-      0
-      )
-
-    end
-
-  end
-
-  )
-
-end
-
--- ==========================================
--- RETRY
--- ==========================================
-
-retryBtn.onClick =
-function()
-
-  checkUpdateStrict()
-
-end
 
 
 
