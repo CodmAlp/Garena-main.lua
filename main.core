@@ -22,26 +22,1696 @@ import("android.media.MediaPlayer")
 import("android.content.Context")
 import "android.graphics.PorterDuff"
 import "android.graphics.PorterDuffColorFilter"
-import "login"
---[[
-Date = "20253425"
-date = os.date("%Y%m%d")
-id="expire"
-if date >= Date then
-  AlertDialog.Builder(this)
-  .setCancelable(false)
-  .setMessage("EXPIRED")
-  .setPositiveButton("𝗕𝗨𝗬",{onClick=function(v)
-      url = "https://t.me/thebestmodz1"
-      activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-      os.exit() end})
-  .show()
-  return
+--import "login"
+import "android.media.MediaPlayer"
+
+import "android.app.*"
+import "android.os.*"
+import "android.content.pm.ActivityInfo"
+
+require "import"
+
+import "android.widget.*"
+import "android.view.*"
+import "android.graphics.*"
+import "android.graphics.drawable.*"
+import "android.os.*"
+import "android.view.animation.*"
+import "android.text.Html"
+import "android.content.Intent"
+import "android.net.Uri"
+import "android.provider.Settings$Secure"
+import "android.content.pm.ActivityInfo"
+import "com.androlua.Ticker"
+import "com.androlua.Http"
+
+import "java.net.URL"
+import "java.io.BufferedReader"
+import "java.io.InputStreamReader"
+
+-- ==========================================
+-- FORCE LANDSCAPE
+-- ==========================================
+
+activity.setRequestedOrientation(
+ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+)
+
+-- ==========================================
+-- CONFIG
+-- ==========================================
+
+local currentVersion = "2.8.1"
+
+-- GITHUB UPDATE JSON
+local versionURL =
+"https://christophersalem94-eng.github.io/alp-update/update.json"
+
+-- DEFAULT UPDATE LINK
+local downloadURL =
+"https://t.me/SliderModMenuMlbb"
+
+-- ==========================================
+-- LOGIN CONFIG
+-- ==========================================
+
+local primary = 0xFF303030
+local cardColor = 0xFF202020
+local buttonColor = 0xFF969696
+local connectingColor = 0xFF999999
+
+local targetGame = "CODM"
+
+local webPanelURL =
+"https://slidermodmenucodm-registerdeviceid-garena.onrender.com/verify"
+
+local pref =
+activity.getSharedPreferences(
+"login_pref",
+0
+)
+
+-- ==========================================
+-- DRAWABLE
+-- ==========================================
+
+local function bg(
+  color,
+  radius,
+  strokeWidth,
+  strokeColor
+  )
+
+  local d = GradientDrawable()
+
+  d.setColor(color)
+  d.setCornerRadius(radius)
+
+  if strokeWidth then
+
+    d.setStroke(
+    strokeWidth,
+    strokeColor
+    )
+
+  end
+
+  return d
+
 end
 
-]]
+-- ==========================================
+-- UNDERLINE
+-- ==========================================
 
-import "android.media.MediaPlayer"
+local function makeUnderline(color)
+
+  local line =
+  GradientDrawable()
+
+  line.setColor(
+  0x00000000
+  )
+
+  line.setStroke(
+  2,
+  color
+  )
+
+  local layers =
+  LayerDrawable({
+    line
+  })
+
+  layers.setLayerInset(
+  0,
+  -8,
+  -8,
+  -8,
+  2
+  )
+
+  return layers
+
+end
+
+-- ==========================================
+-- UPDATE CHECKER UI
+-- ==========================================
+
+update_layout = {
+
+  LinearLayout,
+
+  layout_width = "fill",
+  layout_height = "fill",
+
+  gravity = "center",
+
+  {
+
+    FrameLayout,
+
+    layout_width = "90%w",
+    layout_height = "wrap_content",
+
+    {
+
+      LinearLayout,
+
+      id = "loading_panel",
+
+      orientation = "vertical",
+
+      layout_width = "match_parent",
+      layout_height = "wrap_content",
+
+      padding = "16dp",
+
+      background =
+      bg(
+      cardColor,
+      8,
+      2,
+      0xFF3A4B6E
+      ),
+
+      gravity = "center",
+
+      visibility = 0,
+
+      {
+
+        TextView,
+
+        text = "ŞŁƗĐĒŘ",
+
+        textSize = "28sp",
+
+        textColor = 0xFFFF0000,
+
+        gravity = "center",
+
+      },
+
+      {
+
+        TextView,
+
+        id = "err_status",
+
+        text = "Checking for updates...",
+
+        textSize = "14sp",
+
+        textColor = 0xFFFFFF00,
+
+        gravity = "center",
+
+        layout_marginTop = "10dp",
+
+        layout_marginBottom = "15dp",
+
+      },
+
+      {
+
+        ProgressBar,
+
+        id = "loading_check",
+
+        layout_gravity = "center",
+
+      },
+
+      {
+
+        Button,
+
+        id = "retryBtn",
+
+        text = "RETRY",
+
+        layout_width = "match_parent",
+
+        layout_height = "40dp",
+
+        layout_marginTop = "10dp",
+
+        textColor = 0xFF000000,
+
+        background =
+        bg(
+        0xFF00FF00,
+        4
+        ),
+
+        visibility = 8,
+
+      }
+
+    },
+
+    {
+
+      LinearLayout,
+
+      id = "update_panel",
+
+      orientation = "vertical",
+
+      layout_width = "match_parent",
+
+      layout_height = "wrap_content",
+
+      padding = "16dp",
+
+      background =
+      bg(
+      cardColor,
+      8,
+      2,
+      0xFFFF0000
+      ),
+
+      gravity = "center",
+
+      visibility = 8,
+
+      {
+
+        TextView,
+
+        text = "UPDATE REQUIRED",
+
+        textSize = "22sp",
+
+        textColor = 0xFFFF0000,
+
+        gravity = "center",
+
+      },
+
+      {
+
+        TextView,
+
+        id = "update_msg",
+
+        text = "New version detected!",
+
+        textColor = 0xFFFFFFFF,
+
+        gravity = "center",
+
+        layout_marginTop = "8dp",
+
+        layout_marginBottom = "14dp",
+
+      },
+
+      {
+
+        Button,
+
+        id = "updateBtn",
+
+        text = "UPDATE NOW",
+
+        layout_width = "match_parent",
+
+        layout_height = "40dp",
+
+        textColor = 0xFF000000,
+
+        background =
+        bg(
+        0xFF00FF00,
+        4
+        ),
+
+      },
+
+    }
+
+  }
+
+}
+
+-- ==========================================
+-- UPDATE DIALOG
+-- ==========================================
+
+local updateDialog =
+Dialog(
+activity,
+android.R.style.Theme_Material_Dialog_NoActionBar
+)
+
+updateDialog.setContentView(
+loadlayout(update_layout)
+)
+
+updateDialog.setCancelable(false)
+
+local updateWindow =
+updateDialog.getWindow()
+
+if updateWindow then
+
+  updateWindow.setBackgroundDrawable(
+  ColorDrawable(
+  0x00000000
+  )
+  )
+
+  updateWindow.setDimAmount(
+  0.6
+  )
+
+end
+
+updateDialog.show()
+
+-- ==========================================
+-- UPDATE BUTTON
+-- ==========================================
+
+updateBtn.onClick =
+function()
+
+  activity.startActivity(
+
+  Intent(
+  Intent.ACTION_VIEW,
+
+  Uri.parse(
+  downloadURL
+  )
+  )
+
+  )
+
+  os.exit()
+
+end
+
+-- ==========================================
+-- LOGIN UI FUNCTION
+-- ==========================================
+
+local function showLoginUI()
+
+  -- ========================================
+  -- RESET LOGIN BUTTON
+  -- ========================================
+
+  local function resetLoginButton()
+
+    loginBtn.setText(
+    "LOGIN"
+    )
+
+    loginBtn.setEnabled(
+    true
+    )
+
+    loginBtn.setBackground(
+    bg(
+    0xFFFFE65A,
+    0
+    )
+    )
+
+  end
+
+  -- ========================================
+  -- HIDE STATUS
+  -- IMPORTANT:
+  -- PANEL RETURNS TO ORIGINAL HEIGHT
+  -- ========================================
+
+  local function hideStatus()
+
+    status.setText(
+    ""
+    )
+
+    status.setVisibility(
+    8
+    )
+
+  end
+
+  -- ========================================
+  -- SHOW ERROR
+  -- ========================================
+
+  local function showError(message)
+
+    status.setText(
+    message
+    )
+
+    status.setTextColor(
+    0xFFFF0000
+    )
+
+    status.setVisibility(
+    0
+    )
+
+  end
+
+  -- ========================================
+  -- SHOW SUCCESS
+  -- ========================================
+
+  local function showSuccess(message)
+
+    status.setText(
+    message
+    )
+
+    status.setTextColor(
+    0xFF00FF00
+    )
+
+    status.setVisibility(
+    0
+    )
+
+  end
+
+  -- ========================================
+  -- SHAKE
+  -- ========================================
+
+  local function shakeAnimation(view)
+
+    local anim =
+    TranslateAnimation(
+    0,
+    12,
+    0,
+    0
+    )
+
+    anim.setDuration(
+    50
+    )
+
+    anim.setRepeatCount(
+    4
+    )
+
+    anim.setRepeatMode(
+    2
+    )
+
+    view.startAnimation(
+    anim
+    )
+
+  end
+
+  -- ========================================
+  -- LOGIN PANEL
+  -- ========================================
+
+  login_layout = {
+
+    LinearLayout,
+
+    layout_width = "fill",
+    layout_height = "fill",
+
+    gravity = "center",
+
+    {
+
+      FrameLayout,
+
+      layout_width = "150%w",
+      layout_height = "wrap_content",
+
+      {
+
+        LinearLayout,
+
+        id = "login_panel",
+
+        orientation = "vertical",
+
+        layout_width = "match_parent",
+        layout_height = "wrap_content",
+
+        paddingLeft = "18dp",
+        paddingRight = "18dp",
+        paddingTop = "5dp",
+        paddingBottom = "5dp",
+
+        background =
+        bg(
+        0xFF202020,
+        18
+        ),
+
+        gravity = "center_horizontal",
+
+        -- ==================================
+        -- LOGO
+        -- ==================================
+
+        {
+
+          TextView,
+
+          text = "ŞŁƗĐĒŘ",
+
+          textSize = "32sp",
+
+          textColor = 0xFFFF0000,
+
+          layout_width = "match_parent",
+          layout_height = "38dp",
+
+          gravity = "center",
+
+          layout_marginBottom = "0dp",
+
+        },
+
+        -- ==================================
+        -- VERSION
+        -- ==================================
+
+        {
+
+          TextView,
+
+          text =
+          "Garena v1.6.56 || Injector v"
+          .. currentVersion,
+
+          textSize = "12sp",
+
+          textColor = 0xFF00E5FF,
+
+          layout_width = "match_parent",
+          layout_height = "24dp",
+
+          gravity = "center",
+
+          layout_marginBottom = "7dp",
+
+        },
+
+        -- ==================================
+        -- KEY INPUT
+        -- ==================================
+
+        {
+
+          EditText,
+
+          id = "userKey",
+
+          hint = "Paste your key here...",
+
+          layout_width = "match_parent",
+          layout_height = "42dp",
+
+          paddingLeft = "2dp",
+          paddingRight = "2dp",
+
+          textColor = 0xFFFFFFFF,
+
+          hintTextColor = 0x88999999,
+
+          textSize = "16sp",
+
+          singleLine = true,
+
+          background =
+          makeUnderline(
+          0xFFE0E0E0
+          ),
+
+          -- NORMAL GAP BEFORE LOGIN
+          layout_marginBottom = "8dp",
+
+        },
+
+        -- ==================================
+        -- STATUS / ERROR MESSAGE
+        --
+        -- HIDDEN = NO EXTRA SPACE
+        -- VISIBLE = PANEL EXPANDS
+        -- ==================================
+
+        {
+
+          TextView,
+
+          id = "status",
+
+          text = "",
+
+          textSize = "12sp",
+
+          textColor = 0xFFFF0000,
+
+          layout_width = "match_parent",
+
+          layout_height = "22dp",
+
+          gravity = "left|center_vertical",
+
+          paddingLeft = "2dp",
+          paddingRight = "2dp",
+
+          -- PULLS IT CLOSE TO UNDERLINE
+          layout_marginTop = "-6dp",
+
+          layout_marginBottom = "4dp",
+
+          -- IMPORTANT
+          visibility = 8,
+
+        },
+
+        -- ==================================
+        -- LOGIN
+        -- ==================================
+
+        {
+
+          Button,
+
+          id = "loginBtn",
+
+          text = "LOGIN",
+
+          layout_width = "match_parent",
+          layout_height = "50dp",
+
+          textColor = 0xFF111111,
+
+          textSize = "16sp",
+
+          allCaps = false,
+
+          background =
+          bg(
+          0xFFFFE65A,
+          0
+          ),
+
+          layout_marginBottom = "8dp",
+
+        },
+
+        -- ==================================
+        -- BUY VIP + FREE KEY
+        -- ==================================
+
+        {
+
+          LinearLayout,
+
+          orientation = "horizontal",
+
+          layout_width = "match_parent",
+          layout_height = "46dp",
+
+          layout_marginBottom = "7dp",
+
+          {
+
+            Button,
+
+            id = "buyVipBtn",
+
+            text = "BUY VIP KEY",
+
+            layout_width = "0dp",
+            layout_weight = "1",
+
+            layout_height = "match_parent",
+
+            layout_marginRight = "4dp",
+
+            textColor = 0xFF111111,
+
+            textSize = "14sp",
+
+            allCaps = false,
+
+            background =
+            bg(
+            buttonColor,
+            0
+            ),
+
+          },
+
+          {
+
+            Button,
+
+            id = "buyBtn",
+
+            text = "GET FREE KEY",
+
+            layout_width = "0dp",
+            layout_weight = "1",
+
+            layout_height = "match_parent",
+
+            layout_marginLeft = "4dp",
+
+            textColor = 0xFF111111,
+
+            textSize = "14sp",
+
+            allCaps = false,
+
+            background =
+            bg(
+            buttonColor,
+            0
+            ),
+
+          },
+
+        },
+
+        -- ==================================
+        -- TELEGRAM
+        -- ==================================
+
+        {
+
+          TextView,
+
+          id = "teleLink",
+
+          padding = "1dp",
+
+          text =
+          Html.fromHtml(
+
+          "<font color='#00FF00'>t.me/</font>"
+          ..
+          "<font color='#FFFF00'>SliderChannel</font>"
+
+          ),
+
+          textSize = "15sp",
+
+          layout_width = "match_parent",
+          layout_height = "22dp",
+
+          gravity = "center",
+
+        },
+
+      }
+
+    }
+
+  }
+
+  -- ========================================
+  -- LOGIN DIALOG
+  -- ========================================
+
+  local loginDialog =
+  Dialog(
+  activity,
+  android.R.style.Theme_Material_Dialog_NoActionBar
+  )
+
+  loginDialog.setContentView(
+  loadlayout(login_layout)
+  )
+
+  loginDialog.setCancelable(false)
+
+  local window =
+  loginDialog.getWindow()
+
+  if window then
+
+    window.setBackgroundDrawable(
+    ColorDrawable(
+    0x00000000
+    )
+    )
+
+    window.setDimAmount(
+    0.65
+    )
+
+    window.setSoftInputMode(
+    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+    )
+
+    local lp =
+    window.getAttributes()
+
+    lp.width =
+    WindowManager.LayoutParams.MATCH_PARENT
+
+    lp.height =
+    WindowManager.LayoutParams.MATCH_PARENT
+
+    lp.gravity =
+    Gravity.CENTER
+
+    window.setAttributes(
+    lp
+    )
+
+  end
+
+  loginDialog.show()
+
+  -- ========================================
+  -- SAVED KEY
+  -- ========================================
+
+  local savedKey =
+  pref.getString(
+  "saved_key",
+  ""
+  )
+
+  if savedKey ~= "" then
+
+    userKey.setText(
+    savedKey
+    )
+
+  end
+
+  -- ========================================
+  -- LOADING TIMER
+  -- ========================================
+
+  local loadingTimer =
+  nil
+
+  -- ========================================
+  -- BACK = EXIT
+  -- ========================================
+
+  loginDialog.setOnKeyListener(
+
+  function(
+    dialog,
+    keyCode,
+    event
+    )
+
+    if keyCode ==
+      KeyEvent.KEYCODE_BACK
+      and event.getAction() ==
+      KeyEvent.ACTION_UP then
+
+      if loadingTimer then
+
+        pcall(
+        function()
+
+          loadingTimer.stop()
+
+        end
+        )
+
+        loadingTimer =
+        nil
+
+      end
+
+      pcall(
+      function()
+
+        loginDialog.dismiss()
+
+      end
+      )
+
+      activity.finish()
+
+      return true
+
+    end
+
+    return false
+
+  end
+
+  )
+
+  -- ========================================
+  -- LOADING
+  -- ========================================
+
+  local function startLoadingEffect()
+
+    if loadingTimer then
+
+      pcall(
+      function()
+
+        loadingTimer.stop()
+
+      end
+      )
+
+      loadingTimer =
+      nil
+
+    end
+
+    local dots =
+    {
+      "",
+      ".",
+      "..",
+      "..."
+    }
+
+    local count =
+    0
+
+    loginBtn.setBackground(
+    bg(
+    connectingColor,
+    0
+    )
+    )
+
+    loadingTimer =
+    Ticker()
+
+    loadingTimer.Period =
+    100
+
+    loadingTimer.onTick =
+    function()
+
+      loginBtn.setText(
+
+      "CONNECTING"
+      ..
+      dots[
+      (count % 4) + 1
+      ]
+
+      )
+
+      count =
+      count + 1
+
+    end
+
+    loadingTimer.start()
+
+  end
+
+  -- ========================================
+  -- LOGIN
+  -- ========================================
+
+  loginBtn.onClick =
+  function()
+
+    -- ======================================
+    -- GET INPUT
+    -- ======================================
+
+    local inputKey =
+    userKey.Text:gsub(
+    "%s+",
+    ""
+    )
+
+    -- ======================================
+    -- EMPTY KEY
+    -- ======================================
+
+    if inputKey == "" then
+
+      resetLoginButton()
+
+      showError(
+      "Enter key"
+      )
+
+      shakeAnimation(
+      userKey
+      )
+
+      return
+
+    end
+
+    -- ======================================
+    -- IMPORTANT:
+    -- REMOVE OLD ERROR IMMEDIATELY
+    -- PANEL SHRINKS BACK
+    -- ======================================
+
+    hideStatus()
+
+    loginBtn.setEnabled(
+    false
+    )
+
+    startLoadingEffect()
+
+    -- ======================================
+    -- DEVICE ID
+    -- ======================================
+
+    local deviceId =
+    Secure.getString(
+    activity.getContentResolver(),
+    Secure.ANDROID_ID
+    )
+
+    -- ======================================
+    -- POST DATA
+    -- ======================================
+
+    local postData =
+    {
+      key = inputKey,
+      device_id = deviceId,
+      game = targetGame
+    }
+
+    -- ======================================
+    -- SERVER REQUEST
+    -- ======================================
+
+    Http.post(
+
+    webPanelURL,
+
+    postData,
+
+    "utf-8",
+
+    nil,
+
+    function(
+      code,
+      body
+      )
+
+      -- ==================================
+      -- STOP LOADING
+      -- ==================================
+
+      if loadingTimer then
+
+        pcall(
+        function()
+
+          loadingTimer.stop()
+
+        end
+        )
+
+        loadingTimer =
+        nil
+
+      end
+
+      -- ==================================
+      -- SERVER RESPONSE
+      -- ==================================
+
+      if code == 200
+        and body then
+
+        local statusVal =
+        tonumber(
+        body:match(
+        '"status"%s*:%s*(%d+)'
+        )
+        )
+
+        local expiryVal =
+        tonumber(
+        body:match(
+        '"expiry"%s*:%s*(%d+)'
+        )
+        )
+
+        -- =================================
+        -- SUCCESS
+        -- =================================
+
+        if statusVal == 0
+          and expiryVal then
+
+          loginBtn.setText(
+          "SUCCESS!"
+          )
+
+          loginBtn.setEnabled(
+          true
+          )
+
+          loginBtn.setBackground(
+          bg(
+          0xFFD4E056,
+          0
+          )
+          )
+
+          local diff =
+          expiryVal - os.time()
+
+          local dy =
+          math.floor(
+          diff / 86400
+          )
+
+          local hr =
+          math.floor(
+          (diff % 86400)
+          / 3600
+          )
+
+          local mn =
+          math.floor(
+          (diff % 3600)
+          / 60
+          )
+
+          showSuccess(
+
+          "Login Success | Valid: "
+          ..
+          dy .. "d "
+          ..
+          hr .. "h "
+          ..
+          mn .. "m"
+
+          )
+
+          -- =================================
+          -- SAVE KEY
+          -- =================================
+
+          pref.edit()
+          .putString(
+          "saved_key",
+          inputKey
+          )
+          .apply()
+
+          -- =================================
+          -- CLOSE AFTER SUCCESS
+          -- =================================
+
+          task(
+          2000,
+          function()
+
+            if loginDialog then
+
+              loginDialog.dismiss()
+
+            end
+
+          end
+          )
+
+          -- =================================
+          -- INVALID
+          -- STATUS 1 / 4
+          -- =================================
+
+         elseif statusVal == 1
+          or statusVal == 4 then
+
+          resetLoginButton()
+
+          showError(
+          "Key Not Found ! Invalid"
+          )
+
+          shakeAnimation(
+          userKey
+          )
+
+          -- =================================
+          -- OTHER DEVICE
+          -- STATUS 2
+          -- =================================
+
+         elseif statusVal == 2 then
+
+          resetLoginButton()
+
+          showError(
+          "Key Already Used On Another Device"
+          )
+
+          shakeAnimation(
+          userKey
+          )
+
+          -- =================================
+          -- EXPIRED
+          -- STATUS 3
+          -- =================================
+
+         elseif statusVal == 3 then
+
+          resetLoginButton()
+
+          showError(
+          "Key Expired"
+          )
+
+          shakeAnimation(
+          userKey
+          )
+
+          -- =================================
+          -- BLOCKED
+          -- STATUS 5
+          -- =================================
+
+         elseif statusVal == 5 then
+
+          resetLoginButton()
+
+          showError(
+          "Device Blocked"
+          )
+
+          shakeAnimation(
+          userKey
+          )
+
+          -- =================================
+          -- UNKNOWN STATUS
+          -- =================================
+
+         else
+
+          resetLoginButton()
+
+          showError(
+          "Key Not Found ! Invalid"
+          )
+
+          shakeAnimation(
+          userKey
+          )
+
+        end
+
+        -- ==================================
+        -- SERVER OFFLINE / CONNECTION ERROR
+        -- ==================================
+
+       else
+
+        resetLoginButton()
+
+        showError(
+        "Connection Error ! Server Offline"
+        )
+
+        shakeAnimation(
+        userKey
+        )
+
+      end
+
+    end
+
+    )
+
+  end
+
+  -- ========================================
+  -- BUY VIP
+  -- ========================================
+
+  buyVipBtn.onClick =
+  function()
+
+    activity.startActivity(
+
+    Intent(
+    Intent.ACTION_VIEW,
+
+    Uri.parse(
+    "https://t.me/phia_maganda"
+    )
+    )
+
+    )
+
+  end
+
+  -- ========================================
+  -- FREE KEY
+  -- ========================================
+
+  buyBtn.onClick =
+  function()
+
+    activity.startActivity(
+
+    Intent(
+    Intent.ACTION_VIEW,
+
+    Uri.parse(
+    "https://slidermodmenucodm-registerdeviceid-garena.onrender.com/free"
+    )
+    )
+
+    )
+
+  end
+
+  -- ========================================
+  -- TELEGRAM
+  -- ========================================
+
+  teleLink.onClick =
+  function()
+
+    activity.startActivity(
+
+    Intent(
+    Intent.ACTION_VIEW,
+
+    Uri.parse(
+    "https://t.me/SliderModMenuCodm"
+    )
+    )
+
+    )
+
+  end
+
+end
+
+-- ==========================================
+-- STRICT UPDATE CHECKER
+-- ==========================================
+
+function checkUpdateStrict()
+
+  err_status.setText(
+  "Checking for updates..."
+  )
+
+  loading_check.setVisibility(
+  0
+  )
+
+  retryBtn.setVisibility(
+  8
+  )
+
+  loading_panel.setVisibility(
+  0
+  )
+
+  update_panel.setVisibility(
+  8
+  )
+
+  task(
+  100,
+  function()
+
+    local success, err =
+    pcall(
+
+    function()
+
+      local url =
+      URL(
+      versionURL
+      )
+
+      local connection =
+      url.openConnection()
+
+      connection.setConnectTimeout(
+      8000
+      )
+
+      connection.setReadTimeout(
+      8000
+      )
+
+      connection.setRequestMethod(
+      "GET"
+      )
+
+      connection.setRequestProperty(
+      "User-Agent",
+      "Mozilla/5.0"
+      )
+
+      if connection.getResponseCode()
+        == 200 then
+
+        local stream =
+        connection.getInputStream()
+
+        local reader =
+        BufferedReader(
+        InputStreamReader(
+        stream
+        )
+        )
+
+        local lines =
+        {}
+
+        while true do
+
+          local line =
+          reader.readLine()
+
+          if line == nil then
+
+            break
+
+          end
+
+          table.insert(
+          lines,
+          line
+          )
+
+        end
+
+        reader.close()
+
+        local rawText =
+        table.concat(
+        lines,
+        "\n"
+        )
+
+        -- =================================
+        -- PARSE UPDATE.JSON
+        -- =================================
+
+        local latestStr =
+        rawText:match(
+        '"latest_version"%s*:%s*"([^"]+)"'
+        )
+
+        local requiredStr =
+        rawText:match(
+        '"update_required"%s*:%s*(true)'
+        )
+
+        local messageStr =
+        rawText:match(
+        '"message"%s*:%s*"([^"]*)"'
+        )
+
+        local urlStr =
+        rawText:match(
+        '"download_url"%s*:%s*"([^"]+)"'
+        )
+
+        -- =================================
+        -- DOWNLOAD URL
+        -- =================================
+
+        if urlStr then
+
+          downloadURL =
+          urlStr
+
+        end
+
+        -- =================================
+        -- NEW VERSION
+        -- =================================
+
+        if latestStr
+          and latestStr ~= currentVersion then
+
+          loading_panel.setVisibility(
+          8
+          )
+
+          update_panel.setVisibility(
+          0
+          )
+
+          update_msg.setText(
+
+          "com.garena.game.codm\n\n"
+          ..
+          "Your Version: "
+          ..
+          currentVersion
+          ..
+          "\nRequired Version: "
+          ..
+          latestStr
+          ..
+          "\n\n"
+          ..
+          (
+          messageStr
+          or
+          "Please update to continue."
+          )
+
+          )
+
+          -- =================================
+          -- FORCE UPDATE
+          -- =================================
+
+         elseif requiredStr == "true" then
+
+          loading_panel.setVisibility(
+          8
+          )
+
+          update_panel.setVisibility(
+          0
+          )
+
+          update_msg.setText(
+
+          "com.garena.game.codm\n\n"
+          ..
+          "Your Version: "
+          ..
+          currentVersion
+          ..
+          "\n\n"
+          ..
+          (
+          messageStr
+          or
+          "Update required."
+          )
+
+          )
+
+          -- =================================
+          -- NO UPDATE
+          -- =================================
+
+         else
+
+          updateDialog.dismiss()
+
+          showLoginUI()
+
+        end
+
+       else
+
+        loading_check.setVisibility(
+        8
+        )
+
+        err_status.setText(
+        "Cannot check updates! Tap Retry."
+        )
+
+        retryBtn.setVisibility(
+        0
+        )
+
+      end
+
+    end
+
+    )
+
+    -- =====================================
+    -- UPDATE CHECK ERROR
+    -- =====================================
+
+    if not success then
+
+      loading_check.setVisibility(
+      8
+      )
+
+      err_status.setText(
+      "Connection Error! Tap Retry."
+      )
+
+      retryBtn.setVisibility(
+      0
+      )
+
+    end
+
+  end
+
+  )
+
+end
+
+-- ==========================================
+-- RETRY
+-- ==========================================
+
+retryBtn.onClick =
+function()
+
+  checkUpdateStrict()
+
+end
+
+
+
+-- FORCE LANDSCAPE
+activity.setRequestedOrientation(
+ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+)
 
 if music == nil then
   music = MediaPlayer()
@@ -83,6 +1753,8 @@ import "android.view.animation.AlphaAnimation"
 import "android.view.animation.TranslateAnimation"
 import "android.graphics.Color"
 
+local floatingTextView = nil
+
 function createFloatingText()
   local wm = activity.getSystemService(Context.WINDOW_SERVICE)
 
@@ -106,7 +1778,8 @@ function createFloatingText()
 
   floatText.setShadowLayer(10, 0, 0, Color.RED)
 
-  wm.addView(floatText, params)
+  floatingTextView = floatText
+  wm.addView(floatingTextView, params)
 
 
   function startFloating(view)
@@ -119,18 +1792,34 @@ function createFloatingText()
   startFloating(floatText)
 end
 
-createFloatingText()
-
+--createFloatingText()
 
 activity.setTheme(R.AndLua1)
-activity.ActionBar.setTitle("Lets play!")
-activity.ActionBar.hide()
-activity.overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out)
-activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS).setStatusBarColor(0xFF202125);
---activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-activity.ActionBar.setElevation(0)
-activity.ActionBar.setBackgroundDrawable(ColorDrawable(0xFF202125))
-activity.setRequestedOrientation(1)
+
+local actionBar = activity.getActionBar()
+
+if actionBar ~= nil then
+  actionBar.setTitle("Lets play!")
+  actionBar.hide()
+  actionBar.setElevation(0)
+  actionBar.setBackgroundDrawable(ColorDrawable(0xFF202125))
+end
+
+activity.overridePendingTransition(
+android.R.anim.fade_in,
+android.R.anim.fade_out
+)
+
+activity.getWindow().addFlags(
+WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+)
+
+activity.getWindow().setStatusBarColor(0xFF202125)
+
+-- MAIN UI
+activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+
+-- LOAD MAIN LAYOUT ONCE ONLY
 activity.setContentView(loadlayout(layout))
 
 
@@ -146,7 +1835,10 @@ function CircleButton2(view,InsideColor,radiu,InsideColor1)
   import "android.graphics.drawable.GradientDrawable"
   drawable = GradientDrawable()
   drawable.setShape(GradientDrawable.RECTANGLE)
-  drawable.setCornerRadii({radiu, radii, radii, radiu, radiu, radiu, radiu, radiu})
+  drawable.setCornerRadii({
+    radiu, radiu, radiu, radiu,
+    radiu, radiu, radiu, radiu
+  })
   drawable.setColor(InsideColor)
   drawable.setStroke(4, InsideColor1)
   view.setBackgroundDrawable(drawable)
@@ -156,7 +1848,10 @@ function CircleButton(view,InsideColor,radiu,InsideColor1)
   import "android.graphics.drawable.GradientDrawable"
   drawable = GradientDrawable()
   drawable.setShape(GradientDrawable.RECTANGLE)
-  drawable.setCornerRadii({radiu, radiu, radiu, radiu, radiu, radiu, radiu, radiu})
+  drawable.setCornerRadii({
+    radiu, radiu, radiu, radiu,
+    radiu, radiu, radiu, radiu
+  })
   drawable.setColor(InsideColor)
   drawable.setStroke(3, InsideColor1)
   view.setBackgroundDrawable(drawable)
@@ -279,6 +1974,74 @@ if Build.VERSION.SDK_INT >= 21 then
 end
 --------------------------------------------------
 
+import "android.graphics.drawable.GradientDrawable"
+import "android.animation.ValueAnimator"
+
+-- LOAD UI
+activity.setContentView(loadlayout(layout))
+
+--------------------------------------------------
+-- 🌈 ANIMATED RGB MULTI-COLOR BACKGROUND
+--------------------------------------------------
+
+local bgColors = {
+  Color.parseColor("#00FFFF"), -- Cyan
+  Color.parseColor("#FF00FF"), -- Pink
+  Color.parseColor("#FFFFFF"), -- White
+  Color.parseColor("#00FF00"), -- Green
+  Color.parseColor("#FFD700"), -- Gold
+  Color.parseColor("#FF0000"), -- Red
+  Color.parseColor("#0000FF"), -- Blue
+  Color.parseColor("#00FFFF") -- Loop
+}
+
+local bg = GradientDrawable(
+GradientDrawable.Orientation.TL_BR,
+{
+  bgColors[1],
+  bgColors[3],
+  bgColors[2],
+  bgColors[5]
+}
+)
+
+bg.setCornerRadius(0)
+
+mainBg.setBackground(bg)
+
+if Build.VERSION.SDK_INT >= 21 then
+
+  local rgbAnim = ValueAnimator.ofArgb(bgColors)
+
+  rgbAnim.setDuration(5000)
+  rgbAnim.setRepeatCount(ValueAnimator.INFINITE)
+
+  rgbAnim.addUpdateListener(
+  ValueAnimator.AnimatorUpdateListener {
+    onAnimationUpdate = function(animation)
+
+      local c = animation.getAnimatedValue()
+
+      local c2 = Color.argb(
+      255,
+      math.min(255, Color.red(c) + 35),
+      math.min(255, Color.green(c) + 35),
+      math.min(255, Color.blue(c) + 35)
+      )
+
+      bg.setColors({
+        c,
+        Color.parseColor("#FFFFFFFF"),
+        c2
+      })
+
+    end
+  }
+  )
+
+  rgbAnim.start()
+end
+
 function Win_minWindow.OnTouchListener(v,event)
   if OpenM==false then
     if event.getAction()==MotionEvent.ACTION_DOWN then
@@ -330,7 +2093,7 @@ function t1.onClick(v)
 end
 
 function t1.onLongClick(v)
-  if isMax==true && OpenM==true then
+  if isMax == true and OpenM == true then
     isMax=false OpenM=false
     LayoutVIP.removeView(mainWindow)
     smooth.setChecked(false)
@@ -354,62 +2117,46 @@ enableImmersiveMode()
 import "android.os.Handler"
 import "java.lang.Runnable"
 
-
-
-
-
-
-
-
-
 function start.onClick()
-  Waterdropanimation(start,20)
-  if isMax==false then
-    isMax=true
-    -- 1. Papalabasin agad ang circle icon overlay
-    LayoutVIP1.addView(minWindow,A3params1)
+  Waterdropanimation(start, 20)
 
-    -- 2. SABAY NA MAGLULUNCH ANG CODM (Garena o Global)
+  if isMax == false then
+    isMax = true
+
+    -- 1. IPAPALABAS ANG CIRCLE ICON OVERLAY (Inalis ang comment)
+    pcall(function()
+      LayoutVIP1.addView(minWindow, A3params1)
+    end)
+
+    -- 2. LALUNCH ANG CODM (Garena muna, kapag wala -> Global)
+    local launched = false
     if pcall(function() activity.getPackageManager().getPackageInfo("com.garena.game.codm", 0) end) then
-      this.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.garena.game.codm"))
+      activity.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.garena.game.codm"))
+      launched = true
+     elseif pcall(function() activity.getPackageManager().getPackageInfo("com.activision.charlie", 0) end) then
+      activity.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.activision.charlie"))
+      launched = true
      else
-      if pcall(function() activity.getPackageManager().getPackageInfo("com.activision.charlie", 0) end) then
-        this.startActivity(activity.getPackageManager().getLaunchIntentForPackage("com.activision.charlie"))
-       else
-        print("CODM IS NOT INSTALLED")
-      end
+      idkcstmToast("CODM IS NOT INSTALLED")
     end
 
-    -- 3. DITO ANG DELAYED FUNCTION (Pagkalipas ng 2 segundo)
-    Handler().postDelayed(Runnable({
-      run = function()
-
-        -- Dito mo ic-call yung trigger para mag-ON yung specific action mo, lods:
-        if floatmenu1 ~= nil then
-          floatmenu1.checked = true -- Gagawin nating naka-ON yung switch/checkbox
-
-          -- Tapos tatawagin natin yung function sa loob ng switch mo para mag-execute ang code:
-          floatmenu1.OnCheckedChangeListener()
+    -- 3. AUTO PATCH (Pagkatapos mag-launch ng laro)
+    if launched then
+      Handler().postDelayed(Runnable({
+        run = function()
+          if floatmenu1 ~= nil then
+            floatmenu1.checked = true
+            -- Tawagin ang bypass function para mag-apply ang Hex Patch
+            if floatmenu1.OnCheckedChangeListener then
+              floatmenu1.OnCheckedChangeListener()
+            end
+          end
         end
+      }), 1000) -- Dinagdagan ng 3 segundo delay para nakaload na ang game process bago mag-patch
+    end
 
-      end
-    }), 1000) -- 2000 milliseconds = 2 segundo delay
-
-
-   else
   end
 end
-
-
-
-
-
-
-
-
-
-
-
 
 
 import "android.graphics.drawable.BitmapDrawable"
@@ -644,15 +2391,6 @@ function guest.onClick()
 
   end
 end
-
-
-
-
-
-
-
-
-
 
 cstmToast={
   CardView;
@@ -1210,12 +2948,6 @@ ipad_seekbar.setOnSeekBarChangeListener{
   end
 }
 
-
-
-
-
-
-
 -- [ RED WALLHACK ADJUSTER (0-2000m) ]
 redwh_seekbar.setOnSeekBarChangeListener{
   onProgressChanged=function(view, progress, fromUser)
@@ -1242,10 +2974,6 @@ redwh_seekbar.setOnSeekBarChangeListener{
     idkcstmToast("RED WALLHACK: " .. math.floor(finalDistance) .. "m APPLIED")
   end
 }
-
-
-
-
 
 
 wall.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
@@ -1280,20 +3008,6 @@ function nop.OnCheckedChangeListener()
    else
   end
 end
---[[
-snowb.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function snowb.OnCheckedChangeListener()
-  if snowb.checked then
-    HexPatches.TaizouPogi("libunity.so", 0x57487B0, "h00 00 80 D2 C0 03 5F D6;", 32);
-    HexPatches.TaizouPogi("libunity.so", 0x5748858, "h00 00 80 D2 C0 03 5F D6;", 32);
-    idkcstmToast("SNOWBOARD BOOST: ACTIVATED")
-   else
-    HexPatches.MemoryPatch("libunity.so", 0x57487B0, "hF3 0F 1E F8 FD 7B 01 A9")
-    HexPatches.MemoryPatch("libunity.so", 0x5748858, "hFD 7B 01 A9 FD 43 00 91")
-    idkcstmToast("SNOWBOARD BOOST: DEACTIVATED")
-  end
-end
-]]
 
 walk.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
 function walk.OnCheckedChangeListener()
@@ -1335,34 +3049,7 @@ function br.OnCheckedChangeListener()
   end
 end
 
---[[
-advance.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function advance.OnCheckedChangeListener()
-  if advance.checked then
-    HexPatches.MemoryPatch("libunity.so", 0x8CF23C8, "h20 00 80 D2 C0 03 5F D6")
-    idkcstmToast("WALLHACK RED: ACTIVATED")
-   else
-  end
-end
 
-]]
-
-
-
-
-
---[[
-spect.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function spect.OnCheckedChangeListener()
-  if spect.checked then
-    HexPatches.MemoryPatch("libunity.so", 0x52a0d14, "h20 00 80 D2 C0 03 5F D6")
-    idkcstmToast("SPECTATOR TAGS: ACTIVATED")
-   else
-    HexPatches.MemoryPatch("libunity.so", 0x52a0d14, "hF3 0F 1E F8 FD 7B 01 A9")
-    idkcstmToast("SPECTATOR TAGS: DEACTIVATED")
-  end
-end
-]]
 nos.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
 function nos.OnCheckedChangeListener()
   if nos.checked then
@@ -1371,18 +3058,7 @@ function nos.OnCheckedChangeListener()
    else
   end
 end
---[[
-noshake.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function noshake.OnCheckedChangeListener()
-  if noshake.checked then
-    HexPatches.MemoryPatch("libunity.so", 0x7893964, "h40 00 00 1C C0 03 5F D6")
-    idkcstmToast("NO SHAKE: ACTIVATED")
-   else
-    HexPatches.MemoryPatch("libunity.so", 0x7893964, "hEA 0F 1C FC E9 A3 00 6D")
-    idkcstmToast("NO SHAKE: DEACTIVATED")
-  end
-end
-]]
+
 noreload.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
 function noreload.OnCheckedChangeListener()
   if noreload.checked then
@@ -1439,29 +3115,7 @@ end
 
 
 import "main69"
---[[
-speed.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function speed.OnCheckedChangeListener()
-  if speed.checked then
-    HexPatches.MemoryPatch("libunity.so", 0x56F7340, "h0010201EC0035FD6")
-    idkcstmToast("SPEED HACK: ACTIVATED")
-   else
-    HexPatches.MemoryPatch("libunity.so", 0x56F7340, "h F5 0F 1D F8 F4 4F 01 A9")
-    idkcstmToast("SPEED HACK: DEACTIVATED")
-  end
-end
 
-]]
---[[
-overheat.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function overheat.OnCheckedChangeListener()
-  if overheat.checked then
-    HexPatches.MemoryPatch("libunity.so", 0x99F1020, "h20 01 80 D2 C0 03 5F D6")
-    idkcstmToast("NO EVERHEAT RPD : ACTIVATED")
-   else
-  end
-end
-]]
 swim.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
 function swim.OnCheckedChangeListener()
   if swim.checked then
@@ -1487,32 +3141,7 @@ function longslide.OnCheckedChangeListener()
   end
 end
 
---[[
-max.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function max.OnCheckedChangeListener()
-  if max.checked then
-    HexPatches.MemoryPatch("libunity.so", 0xA6B30B0, "h002480D2C0035FD6")
-    idkcstmToast("MAX FRAME: ACTIVATED")
-   else
-    HexPatches.MemoryPatch("libunity.so", 0xA6B30B0, "h FF 43 01 D1 F7 0B 00 F9")
-    idkcstmToast("MAX FRAME: DEACTIVATED")
-  end
-end
 
-
-antifps.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function antifps.OnCheckedChangeListener()
-  if antifps.checked then
-    HexPatches.MemoryPatch("libunity.so", 0x6BC3E98, "h F3 0F 1E F8 FD 7B 01 A9")
-    HexPatches.MemoryPatch("libunity.so", 0x6BB1B4C, "h 08 68 40 B9 1F 0D 00 71")
-    idkcstmToast("ANTI FPS DROP: ACTIVATED")
-   else
-    HexPatches.MemoryPatch("libunity.so", 0x6BC3E98, "h200080D2C0035FD6")
-    HexPatches.MemoryPatch("libunity.so", 0x6BB1B4C, "h200080D2C0035FD6")
-    idkcstmToast("ANTI FPS DROP: DEACTIVATED")
-  end
-end
-]]
 amo.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
 function amo.OnCheckedChangeListener()
   if amo.checked then
@@ -1541,37 +3170,8 @@ end
 
 import "video"
 
+-- ==m========================================
+-- START
+-- ==========================================
 
-
-feedc.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function feedc.onClick()
-  url = "https://t.me/KAZELIDERMODS"
-  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- TUTORIAL BYPASS
-  idkcstmToast("GIVE AN FEEDBACK TO OWNER")
-end
-
-
-
-htb.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function htb.onClick()
-  url = "https://t.me/KAZELIDERMODS"
-  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- TUTORIAL BYPASS
-  idkcstmToast("JUST FOLLOW THE STEP")
-end
-
-pl.ButtonDrawable.setColorFilter(PorterDuffColorFilter(0x9AFFFFFF, PorterDuff.Mode.SRC_ATOP))
-function pl.onClick()
-  url = "https://t.me/KAZELIDERMODS"
-  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- TUTORIAL BYPASS
-  idkcstmToast("SHOWING PRICE LIST")
-end
-
-
-
-function whatsnew.onClick()
-  url = "https://t.me/KAZELIDERMODS"
-  activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) -- WHAT'S NEW
-  idkcstmToast("WHAT'S NEW IN VERDANT INJECTOR V1")
-end
-
-import "video"
+checkUpdateStrict()
