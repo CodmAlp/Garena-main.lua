@@ -61,7 +61,7 @@ ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 -- CONFIG
 -- ==========================================
 
-local currentVersion = "2.8.1"
+local currentVersion = "2.8.2"
 
 -- GITHUB UPDATE JSON
 local versionURL =
